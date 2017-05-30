@@ -11,7 +11,7 @@ import sys
 from distutils.core import setup
 from setuptools import find_packages
 
-_package_root = ""
+_package_root = "."
 _root_package = 'aptly_api'
 
 
@@ -28,7 +28,6 @@ _packages = find_packages(_package_root, exclude=["*.tests", "*.tests.*", "tests
 
 _requirements = [
     'typing==3.6.1',
-    'pyopenssl==17.0.0',
     'requests==2.17.3',
 ]
 
