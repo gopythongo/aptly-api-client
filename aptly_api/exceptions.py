@@ -6,11 +6,6 @@
 
 from typing import NamedTuple, Sequence, Dict
 
-from .exceptions import AptlyAPIException
-from .repos import ReposClient
 
-
-class Client:
-    def __init__(self, aptly_server_url: str) -> None:
-        self.aptly_server_url = aptly_server_url
-        self.repos = ReposClient()
+class AptlyAPIException(Exception):
+    pass

@@ -6,8 +6,7 @@
 
 
 from .client import Client
+from .exceptions import AptlyAPIException
 
-
-__all__ = ['Client', 'version']
 
 version = "0.1.0"
