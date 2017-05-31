@@ -17,9 +17,33 @@ class ReposAPIException(AptlyAPIException):
 
 
 class ReposAPISection(BaseAPIClient):
+    def _repo_from_response(self, api_response: Dict[str, str]):
+        return Repo(
+            name=api_response["Name"],
+            default_component=api_response["DefaultComponent"],
+            default_distribution=api_response["DefaultDistribution"],
+            comment=api_response["Comment"],
+        )
+
     def create(self, reponame: str, comment: str=None, default_distribution: str=None,
-               default_component: str=None) -> None:
-        pass
+               default_component: str=None) -> Repo:
+        data = {
+            "Name": reponame,
+        }
+
+        if comment:
+            data["Comment"] = comment
+        if default_distribution:
+            data["DefaultDistribution"] = default_distribution
+        if default_component:
+            data["DefaultComponent"] = default_component
+
+        resp = self.do_post("/api/repos", json=data)
+
+        if resp.status_code != 200:
+            raise ReposAPIException(self._error_from_response(resp))
+
+        return self._repo_from_response(resp.json())
 
     def show(self, reponame: str) -> Repo:
         pass
@@ -33,7 +57,17 @@ class ReposAPISection(BaseAPIClient):
         pass
 
     def list(self) -> Sequence[Repo]:
-        pass
+        resp = self.do_get("/api/repos")
+
+        if resp.status_code != 200:
+            raise ReposAPIException(self._error_from_response(resp))
+
+        repos = []
+        for rdesc in resp.json():
+            repos.append(
+                self._repo_from_response(rdesc)
+            )
+        return repos
 
     def delete(self, reponame: str, force: bool=False) -> None:
         pass
