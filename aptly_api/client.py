@@ -6,8 +6,9 @@
 
 from typing import NamedTuple, Sequence, Dict
 
-from .exceptions import AptlyAPIException
-from .repos import ReposClient
+from aptly_api.base import AptlyAPIException
+from aptly_api.parts.repos import ReposClient
+from aptly_api.parts.files import FilesClient
 
 
 class Client:

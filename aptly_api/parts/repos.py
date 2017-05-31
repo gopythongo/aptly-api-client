@@ -4,13 +4,13 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from typing import NamedTuple, Sequence, Dict
+from typing import NamedTuple, Sequence, Dict, Union
 
-from .exceptions import AptlyAPIException
+from aptly_api.base import AptlyAPIException
 
 
-Repo = NamedTuple('Repo', [("name", str), ("comment", str), ("default_distribution", str),
-                           ("default_component", str)])
+Repo = NamedTuple('Repo', [('name', str), ('comment', str), ('default_distribution', str),
+                           ('default_component', str)])
 
 
 class ReposAPIException(AptlyAPIException):
@@ -28,7 +28,8 @@ class ReposClient:
     def show(self, reponame: str) -> Repo:
         pass
 
-    def search(self, query: str=None, with_deps: bool=False, detailed: bool=False) -> Sequence[Dict[str, str]]:
+    def search(self, query: str=None, with_deps: bool=False,
+               detailed: bool=False) -> Union[Sequence[str], Sequence[Dict[str, str]]]:
         pass
 
     def edit(self, reponame: str, comment: str=None, default_distribution: str=None,
