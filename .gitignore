@@ -1,0 +1,18 @@
+syntax: glob
+Lib
+lib
+*.db
+*.pyc
+*.pyd
+.project
+.pydevproject
+.settings
+.idea
+dist
+*.egg-info
+*.iml
+static
+build
+.idea
+.env
+__pycache__
