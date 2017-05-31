@@ -38,13 +38,6 @@ setup(
     package_dir={
         '': _package_root,
     },
-    entry_points={
-        "console_scripts": [
-            "gopythongo = gopythongo.main:main",
-            "vaultwrapper = gopythongo.vaultwrapper:main",
-            "vaultgetcert = gopythongo.vaultgetcert:main",
-        ]
-    },
     install_requires=_requirements,
     classifiers=[
         "Development Status :: 4 - Beta",
