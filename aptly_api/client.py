@@ -18,9 +18,9 @@ from aptly_api.parts.snapshots import SnapshotAPISection
 class Client:
     def __init__(self, aptly_server_url: str) -> None:
         self.aptly_server_url = aptly_server_url
-        self.files = FilesAPISection()
-        self.misc = MiscAPISection()
-        self.packages = PackageAPISection()
-        self.publish = PublishAPISection()
-        self.repos = ReposAPISection()
-        self.snapshots = SnapshotAPISection
+        self.files = FilesAPISection(self.aptly_server_url)
+        self.misc = MiscAPISection(self.aptly_server_url)
+        self.packages = PackageAPISection(self.aptly_server_url)
+        self.publish = PublishAPISection(self.aptly_server_url)
+        self.repos = ReposAPISection(self.aptly_server_url)
+        self.snapshots = SnapshotAPISection(self.aptly_server_url)

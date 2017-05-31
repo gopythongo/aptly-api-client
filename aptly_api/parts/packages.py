@@ -21,8 +21,5 @@ Package = NamedTuple('Package',[
 
 
 class PackageAPISection(BaseAPIClient):
-    def __init__(self) -> None:
-        pass
-
     def show(self, key: str) -> Package:
         pass
