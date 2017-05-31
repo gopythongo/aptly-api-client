@@ -5,7 +5,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from typing import NamedTuple, Dict
 
-from aptly_api.base import AptlyAPIException
+from aptly_api.base import AptlyAPIException, BaseAPIClient
 
 
 class PackageAPIException(AptlyAPIException):
@@ -20,7 +20,7 @@ Package = NamedTuple('Package',[
 ])
 
 
-class PackageAPIClient:
+class PackageAPISection(BaseAPIClient):
     def __init__(self) -> None:
         pass
 

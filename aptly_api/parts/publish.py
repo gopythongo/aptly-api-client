@@ -6,7 +6,7 @@
 
 from typing import NamedTuple, Sequence, Dict
 
-from aptly_api.base import AptlyAPIException
+from aptly_api.base import AptlyAPIException, BaseAPIClient
 
 
 class PublishAPIException(AptlyAPIException):
@@ -25,10 +25,7 @@ PublishEndpoint = NamedTuple('PublishEndpoint', [
 ])
 
 
-class PublishAPIClient:
-    def __init__(self) -> None:
-        pass
-
+class PublishAPISection(BaseAPIClient):
     def list(self, prefix: str=None) -> Sequence[PublishEndpoint]:
         pass
 

@@ -6,17 +6,14 @@
 
 from typing import Sequence
 
-from aptly_api.base import AptlyAPIException
+from aptly_api.base import AptlyAPIException, BaseAPIClient
 
 
 class FilesAPIException(AptlyAPIException):
     pass
 
 
-class FilesClient:
-    def __init__(self) -> None:
-        pass
-
+class FilesAPISection(BaseAPIClient):
     def list(self, directory: str=None) -> Sequence[str]:
         pass
 

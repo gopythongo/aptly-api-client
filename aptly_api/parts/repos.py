@@ -6,8 +6,7 @@
 
 from typing import NamedTuple, Sequence, Dict, Union
 
-from aptly_api.base import AptlyAPIException
-
+from aptly_api.base import AptlyAPIException, BaseAPIClient
 
 Repo = NamedTuple('Repo', [('name', str), ('comment', str), ('default_distribution', str),
                            ('default_component', str)])
@@ -17,10 +16,7 @@ class ReposAPIException(AptlyAPIException):
     pass
 
 
-class ReposClient:
-    def __init__(self) -> None:
-        pass
-
+class ReposAPISection(BaseAPIClient):
     def create(self, reponame: str, comment: str=None, default_distribution: str=None,
                default_component: str=None) -> None:
         pass

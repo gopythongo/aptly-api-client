@@ -7,7 +7,7 @@
 from datetime import datetime
 from typing import NamedTuple, Sequence, Optional, Union, Dict
 
-from aptly_api.base import AptlyAPIException
+from aptly_api.base import AptlyAPIException, BaseAPIClient
 
 
 class SnapshotAPIException(AptlyAPIException):
@@ -17,10 +17,7 @@ class SnapshotAPIException(AptlyAPIException):
 Snapshot = NamedTuple('Snapshot', [('name', str), ('description', str), ('created_at', datetime)])
 
 
-class SnapshotsClient:
-    def __init__(self) -> None:
-        pass
-
+class SnapshotAPISection(BaseAPIClient):
     def list(self, sort: str='name') -> Sequence[Snapshot]:
         if sort not in ['name', 'time']:
             raise SnapshotAPIException("Snapshot LIST only supports two sort modes: 'name' and 'time'. %s is not "
