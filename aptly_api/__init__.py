@@ -5,8 +5,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-from .client import Client
-from .exceptions import AptlyAPIException
+from aptly_api.client import Client
+from aptly_api.base import AptlyAPIException
 
 
 version = "0.1.0"
