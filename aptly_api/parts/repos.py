@@ -5,20 +5,23 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from typing import NamedTuple, Sequence, Dict, Union
+from urllib.parse import quote
 
-from aptly_api.base import BaseAPIClient
+from aptly_api.base import BaseAPIClient, AptlyAPIException
+from aptly_api.parts.packages import PackageAPISection, Package
 
 Repo = NamedTuple('Repo', [('name', str), ('comment', str), ('default_distribution', str),
                            ('default_component', str)])
 
 
 class ReposAPISection(BaseAPIClient):
-    def _repo_from_response(self, api_response: Dict[str, str]):
+    @staticmethod
+    def repo_from_response(api_response: Dict[str, str]):
         return Repo(
             name=api_response["Name"],
-            default_component=api_response["DefaultComponent"],
-            default_distribution=api_response["DefaultDistribution"],
-            comment=api_response["Comment"],
+            default_component=api_response["DefaultComponent"] if "DefaultComponent" in api_response else None,
+            default_distribution=api_response["DefaultDistribution"] if "DefaultDistribution" in api_response else None,
+            comment=api_response["Comment"] if "Comment" in api_response else None,
         )
 
     def create(self, reponame: str, comment: str=None, default_distribution: str=None,
@@ -36,18 +39,49 @@ class ReposAPISection(BaseAPIClient):
 
         resp = self.do_post("/api/repos", json=data)
 
-        return self._repo_from_response(resp.json())
+        return self.repo_from_response(resp.json())
 
     def show(self, reponame: str) -> Repo:
         resp = self.do_get("/api/repos/%s" % reponame)
+        return self.repo_from_response(resp.json())
 
-    def search(self, query: str=None, with_deps: bool=False,
-               detailed: bool=False) -> Union[Sequence[str], Sequence[Dict[str, str]]]:
-        pass
+    def search_packages(self, reponame: str, query: str=None, with_deps: bool=False,
+                        detailed: bool=False) -> Sequence[Package]:
+        if query is None and with_deps:
+            raise AptlyAPIException("search_packages can't include dependencies (with_deps==True) without"
+                                    "a query")
+        params = {}
+        if query:
+            params["q"] = query
+
+            if with_deps:
+                params["withDeps"] = "1"
+
+        if detailed:
+            params["format"] = "details"
+
+        resp = self.do_get("/api/repos/%s/packages" % quote(reponame), params=params)
+        ret = []
+        for rpkg in resp.json():
+            ret.append(PackageAPISection.package_from_response(rpkg))
+        return ret
 
     def edit(self, reponame: str, comment: str=None, default_distribution: str=None,
              default_component: str=None) -> None:
-        pass
+        if comment is None and default_component is None and default_distribution is None:
+            raise AptlyAPIException("edit requires at least one of 'comment', 'default_distribution' or "
+                                    "'default_component'.")
+
+        body = {}
+        if comment is not None:
+            body["Comment"] = comment
+        if default_distribution is not None:
+            body["DefaultDistribution"] = default_distribution
+        if default_component is not None:
+            body["DefaultComponent"] = default_component
+
+        resp = self.do_put("/api/repos/%s" % quote(reponame), json=body)
+        return self.repo_from_response(resp.json())
 
     def list(self) -> Sequence[Repo]:
         resp = self.do_get("/api/repos")
@@ -55,12 +89,12 @@ class ReposAPISection(BaseAPIClient):
         repos = []
         for rdesc in resp.json():
             repos.append(
-                self._repo_from_response(rdesc)
+                self.repo_from_response(rdesc)
             )
         return repos
 
     def delete(self, reponame: str, force: bool=False) -> None:
-        pass
+        self.do_delete("/api/repos/%s" % quote(reponame), params={"force": "1" if force else "0"})
 
     def add_uploaded_file(self, reponame: str, dir: str, file: str=None, remove_processed_files: bool=False,
                           force_replace: bool=False):

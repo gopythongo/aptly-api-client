@@ -14,7 +14,9 @@ from requests.auth import AuthBase
 
 
 class AptlyAPIException(Exception):
-    pass
+    def __init__(self, *args, status_code: int) -> None:
+        super().__init__(*args)
+        self.status_code = status_code
 
 
 class BaseAPIClient:
@@ -65,7 +67,7 @@ class BaseAPIClient:
                             cert=self.ssl_cert, auth=self.http_auth)
 
         if resp.status_code != 200:
-            raise AptlyAPIException(self._error_from_response(resp))
+            raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
 
         return resp
 
@@ -77,7 +79,7 @@ class BaseAPIClient:
                              verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
 
         if resp.status_code != 200:
-            raise AptlyAPIException(self._error_from_response(resp))
+            raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
 
         return resp
 
@@ -89,15 +91,15 @@ class BaseAPIClient:
                             verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
 
         if resp.status_code != 200:
-            raise AptlyAPIException(self._error_from_response(resp))
+            raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
 
         return resp
 
-    def do_delete(self, urlpath: str) -> requests.Response:
-        resp = requests.delete(self._makeurl(urlpath), verify=self.ssl_verify, cert=self.ssl_cert,
-                               auth=self.http_auth)
+    def do_delete(self, urlpath: str, params: Dict[str, str]=None) -> requests.Response:
+        resp = requests.delete(self._makeurl(urlpath), params=params, verify=self.ssl_verify,
+                               cert=self.ssl_cert, auth=self.http_auth)
 
         if resp.status_code != 200:
-            raise AptlyAPIException(self._error_from_response(resp))
+            raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
 
         return resp

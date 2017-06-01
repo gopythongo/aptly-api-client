@@ -6,8 +6,7 @@
 
 from typing import NamedTuple, Sequence, Dict
 
-from aptly_api.base import BaseAPIClient
-
+from aptly_api.base import BaseAPIClient, AptlyAPIException
 
 PublishEndpoint = NamedTuple('PublishEndpoint', [
     ('storage', str),
@@ -34,7 +33,7 @@ class PublishAPISection(BaseAPIClient):
                 sign_keyring: str=None, sign_secret_keyring: str=None,
                 sign_passphrase: str=None, sign_passphrase_file: str=None):
         if not sign_skip and not sign_gpgkey:
-            raise PublishAPIException("Publish needs a gpgkey to sign with if skip is False")
+            raise AptlyAPIException("Publish needs a gpgkey to sign with if sign_skip is False")
         pass
 
     def update(self, *, prefix: str, distribution: str,
