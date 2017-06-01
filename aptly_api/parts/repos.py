@@ -13,6 +13,11 @@ from aptly_api.parts.packages import PackageAPISection, Package
 Repo = NamedTuple('Repo', [('name', str), ('comment', str), ('default_distribution', str),
                            ('default_component', str)])
 
+FileReport = NamedTuple('FileReport', [
+    ('failed_files', Sequence[str]),
+    ('report', Dict[str, Sequence[str]])
+])
+
 
 class ReposAPISection(BaseAPIClient):
     @staticmethod
@@ -22,6 +27,13 @@ class ReposAPISection(BaseAPIClient):
             default_component=api_response["DefaultComponent"] if "DefaultComponent" in api_response else None,
             default_distribution=api_response["DefaultDistribution"] if "DefaultDistribution" in api_response else None,
             comment=api_response["Comment"] if "Comment" in api_response else None,
+        )
+
+    @staticmethod
+    def filereport_from_response(api_response: Dict[str, str]):
+        return FileReport(
+            failed_files=api_response["FailedFiles"],
+            report=api_response["Report"],
         )
 
     def create(self, reponame: str, comment: str=None, default_distribution: str=None,
@@ -96,12 +108,30 @@ class ReposAPISection(BaseAPIClient):
     def delete(self, reponame: str, force: bool=False) -> None:
         self.do_delete("/api/repos/%s" % quote(reponame), params={"force": "1" if force else "0"})
 
-    def add_uploaded_file(self, reponame: str, dir: str, file: str=None, remove_processed_files: bool=False,
-                          force_replace: bool=False):
-        pass
+    def add_uploaded_file(self, reponame: str, dir: str, filename: str=None, remove_processed_files: bool=True,
+                          force_replace: bool=False) -> FileReport:
+        params = {}
+        if not remove_processed_files:
+            params["noRemove"] = "1"
+        if force_replace:
+            params["forceReplace"] = "1"
+
+        if filename is None:
+            resp = self.do_post("/api/repos/%s/file/%s" % (quote(reponame), quote(dir),), params=params)
+        else:
+            resp = self.do_post("/api/repos/%s/file/%s/%s" % (quote(reponame), quote(dir), quote(filename),),
+                                params=params)
+
+        return self.filereport_from_response(resp.json())
 
     def add_packages_by_key(self, reponame: str, *package_keys: str):
-        pass
+        resp = self.do_post("/api/repos/%s/packages" % quote(reponame), json={
+            "PackageRefs": package_keys,
+        })
+        return self.repo_from_response(resp.json())
 
     def delete_packages_by_key(self, reponame: str, *package_keys: str):
-        pass
+        resp = self.do_delete("/api/repos/%s/packages" % quote(reponame), json={
+            "PackageRefs": package_keys,
+        })
+        return self.repo_from_response(resp.json())

@@ -72,10 +72,11 @@ class BaseAPIClient:
         return resp
 
     def do_post(self, urlpath: str, data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]]=None,
+                params: Dict[str, str]=None,
                 files=Union[Dict[str, IO], Dict[str, Tuple[str, IO, str, Optional[Dict[str, str]]]],
                             Dict[str, Tuple[str, str]]],
                 json: Union[List[Dict[str, Any]], Dict[str, Any]]=None) -> requests.Response:
-        resp = requests.post(self._makeurl(urlpath), data=data, files=files, json=json,
+        resp = requests.post(self._makeurl(urlpath), data=data, params=params, files=files, json=json,
                              verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
 
         if resp.status_code != 200:
@@ -95,9 +96,11 @@ class BaseAPIClient:
 
         return resp
 
-    def do_delete(self, urlpath: str, params: Dict[str, str]=None) -> requests.Response:
-        resp = requests.delete(self._makeurl(urlpath), params=params, verify=self.ssl_verify,
-                               cert=self.ssl_cert, auth=self.http_auth)
+    def do_delete(self, urlpath: str, params: Dict[str, str]=None,
+                  data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]]=None,
+                  json: Union[List[Dict[str, Any]], Dict[str, Any]]=None) -> requests.Response:
+        resp = requests.delete(self._makeurl(urlpath), params=params, data=data, json=json,
+                               verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
 
         if resp.status_code != 200:
             raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)

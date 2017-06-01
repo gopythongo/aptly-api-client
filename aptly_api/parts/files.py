@@ -3,18 +3,32 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
+import os
 from typing import Sequence
 
-from aptly_api.base import BaseAPIClient
+from aptly_api.base import BaseAPIClient, AptlyAPIException
 
 
 class FilesAPISection(BaseAPIClient):
     def list(self, directory: str=None) -> Sequence[str]:
-        pass
+        if directory is None:
+            resp = self.do_get("/api/files")
+        else:
+            resp = self.do_get("/api/files/%s" % directory)
+
+        return resp.json()
 
     def upload(self, destination: str, *files: str) -> Sequence[str]:
-        pass
+        to_upload = []
+        for f in files:
+            if not os.path.exists(f) or not os.access(f, os.R_OK):
+                raise AptlyAPIException("File to upload %s can't be opened or read" % f)
+            fh = open(f, mode="rb")
+            to_upload.append((f, fh),)
+
+        resp = self.do_post("/api/files/%s" % destination,
+                            files=to_upload)
+        return resp.json()
 
     def delete(self, path: str=None) -> None:
         pass
