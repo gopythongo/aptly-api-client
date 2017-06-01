@@ -6,11 +6,7 @@
 
 from typing import Sequence
 
-from aptly_api.base import AptlyAPIException, BaseAPIClient
-
-
-class FilesAPIException(AptlyAPIException):
-    pass
+from aptly_api.base import BaseAPIClient
 
 
 class FilesAPISection(BaseAPIClient):

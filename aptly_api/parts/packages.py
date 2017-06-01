@@ -5,11 +5,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from typing import NamedTuple, Dict
 
-from aptly_api.base import AptlyAPIException, BaseAPIClient
-
-
-class PackageAPIException(AptlyAPIException):
-    pass
+from aptly_api.base import BaseAPIClient
 
 
 Package = NamedTuple('Package',[

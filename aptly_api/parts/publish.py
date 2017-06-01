@@ -6,11 +6,7 @@
 
 from typing import NamedTuple, Sequence, Dict
 
-from aptly_api.base import AptlyAPIException, BaseAPIClient
-
-
-class PublishAPIException(AptlyAPIException):
-    pass
+from aptly_api.base import BaseAPIClient
 
 
 PublishEndpoint = NamedTuple('PublishEndpoint', [

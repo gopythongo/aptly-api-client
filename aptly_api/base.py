@@ -24,6 +24,7 @@ class BaseAPIClient:
         self.ssl_verify = ssl_verify
         self.ssl_cert = ssl_cert
         self.http_auth = http_auth
+        self.exc_class = AptlyAPIException
 
         while self.base_url.endswith("/"):
             self.base_url = self.base_url[:-1]
@@ -60,23 +61,43 @@ class BaseAPIClient:
         return urljoin(self.base_url, path)
 
     def do_get(self, urlpath: str, params: Dict[str, str]=None) -> requests.Response:
-        return requests.get(self._makeurl(urlpath), params=params, verify=self.ssl_verify,
+        resp = requests.get(self._makeurl(urlpath), params=params, verify=self.ssl_verify,
                             cert=self.ssl_cert, auth=self.http_auth)
+
+        if resp.status_code != 200:
+            raise AptlyAPIException(self._error_from_response(resp))
+
+        return resp
 
     def do_post(self, urlpath: str, data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]]=None,
                 files=Union[Dict[str, IO], Dict[str, Tuple[str, IO, str, Optional[Dict[str, str]]]],
                             Dict[str, Tuple[str, str]]],
                 json: Union[List[Dict[str, Any]], Dict[str, Any]]=None) -> requests.Response:
-        return requests.post(self._makeurl(urlpath), data=data, files=files, json=json,
+        resp = requests.post(self._makeurl(urlpath), data=data, files=files, json=json,
                              verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
+
+        if resp.status_code != 200:
+            raise AptlyAPIException(self._error_from_response(resp))
+
+        return resp
 
     def do_put(self, urlpath: str, data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]]=None,
                files=Union[Dict[str, IO], Dict[str, Tuple[str, IO, str, Optional[Dict[str, str]]]],
                            Dict[str, Tuple[str, str]]],
                json: Union[List[Dict[str, Any]], Dict[str, Any]]=None) -> requests.Response:
-        return requests.put(self._makeurl(urlpath), data=data, files=files, json=json,
+        resp = requests.put(self._makeurl(urlpath), data=data, files=files, json=json,
                             verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
 
+        if resp.status_code != 200:
+            raise AptlyAPIException(self._error_from_response(resp))
+
+        return resp
+
     def do_delete(self, urlpath: str) -> requests.Response:
-        return requests.delete(self._makeurl(urlpath), verify=self.ssl_verify, cert=self.ssl_cert,
+        resp = requests.delete(self._makeurl(urlpath), verify=self.ssl_verify, cert=self.ssl_cert,
                                auth=self.http_auth)
+
+        if resp.status_code != 200:
+            raise AptlyAPIException(self._error_from_response(resp))
+
+        return resp

@@ -6,14 +6,10 @@
 
 from typing import NamedTuple, Sequence, Dict, Union
 
-from aptly_api.base import AptlyAPIException, BaseAPIClient
+from aptly_api.base import BaseAPIClient
 
 Repo = NamedTuple('Repo', [('name', str), ('comment', str), ('default_distribution', str),
                            ('default_component', str)])
-
-
-class ReposAPIException(AptlyAPIException):
-    pass
 
 
 class ReposAPISection(BaseAPIClient):
@@ -40,13 +36,10 @@ class ReposAPISection(BaseAPIClient):
 
         resp = self.do_post("/api/repos", json=data)
 
-        if resp.status_code != 200:
-            raise ReposAPIException(self._error_from_response(resp))
-
         return self._repo_from_response(resp.json())
 
     def show(self, reponame: str) -> Repo:
-        pass
+        resp = self.do_get("/api/repos/%s" % reponame)
 
     def search(self, query: str=None, with_deps: bool=False,
                detailed: bool=False) -> Union[Sequence[str], Sequence[Dict[str, str]]]:
@@ -58,9 +51,6 @@ class ReposAPISection(BaseAPIClient):
 
     def list(self) -> Sequence[Repo]:
         resp = self.do_get("/api/repos")
-
-        if resp.status_code != 200:
-            raise ReposAPIException(self._error_from_response(resp))
 
         repos = []
         for rdesc in resp.json():

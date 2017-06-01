@@ -7,11 +7,7 @@
 from datetime import datetime
 from typing import NamedTuple, Sequence, Optional, Union, Dict
 
-from aptly_api.base import AptlyAPIException, BaseAPIClient
-
-
-class SnapshotAPIException(AptlyAPIException):
-    pass
+from aptly_api.base import BaseAPIClient
 
 
 Snapshot = NamedTuple('Snapshot', [('name', str), ('description', str), ('created_at', datetime)])
