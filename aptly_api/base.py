@@ -14,7 +14,7 @@ from requests.auth import AuthBase
 
 
 class AptlyAPIException(Exception):
-    def __init__(self, *args, status_code: int) -> None:
+    def __init__(self, *args, status_code: int=0) -> None:
         super().__init__(*args)
         self.status_code = status_code
 

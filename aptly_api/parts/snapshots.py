@@ -6,43 +6,104 @@
 
 from datetime import datetime
 from typing import NamedTuple, Sequence, Optional, Union, Dict
+from urllib.parse import quote
 
-from aptly_api.base import BaseAPIClient
-
+from aptly_api.base import BaseAPIClient, AptlyAPIException
+from aptly_api.parts.packages import Package, PackageAPISection
 
 Snapshot = NamedTuple('Snapshot', [('name', str), ('description', str), ('created_at', datetime)])
 
 
 class SnapshotAPISection(BaseAPIClient):
+    @staticmethod
+    def snapshot_from_response(api_response) -> Snapshot:
+        return Snapshot(
+            name=api_response["Name"],
+            description=api_response["Description"] if "Description" in api_response else None,
+            created_at=api_response["CreatedAt"] if "CreatedAt" in api_response else None,
+        )
+
     def list(self, sort: str='name') -> Sequence[Snapshot]:
         if sort not in ['name', 'time']:
-            raise SnapshotAPIException("Snapshot LIST only supports two sort modes: 'name' and 'time'. %s is not "
-                                       "supported." % sort)
-        return []
+            raise AptlyAPIException("Snapshot LIST only supports two sort modes: 'name' and 'time'. %s is not "
+                                    "supported." % sort)
+        resp = self.do_get("/api/snapshots")
+        ret = []
+        for rsnap in resp.json():
+            ret.append(self.snapshot_from_response(rsnap))
+        return ret
 
     def create_from_repo(self, reponame: str, snapshotname: str, description: str=None) -> Snapshot:
-        pass
+        body = {
+            "Name": snapshotname,
+        }
+        if description is not None:
+            body["Description"] = description
+
+        resp = self.do_post("/api/repos/%s/snapshots" % quote(reponame), json=body)
+        return self.snapshot_from_response(resp.json())
 
     def create_from_packages(self, snapshotname: str, description: str=None,
                              source_snapshots: Optional[Sequence[str]]=None,
                              package_refs: Optional[Sequence[str]] = None) -> Snapshot:
-        pass
+        body = {
+            "Name": snapshotname,
+        }
+        if description is not None:
+            body["Description"] = description
 
-    def update(self, snapshotname: str, newname: str=None, description: str=None) -> Snapshot:
-        if newname is None and description is None:
-            raise SnapshotAPIException("When updating a Snapshot you must at lease provide either a new name or a "
-                                       "new description.")
-        pass
+        if source_snapshots is not None:
+            body["SourceSnapshots"] = source_snapshots
+
+        if package_refs is not None:
+            body["PackageRefs"] = package_refs
+
+        resp = self.do_post("/api/snapshots", json=body)
+        return self.snapshot_from_response(resp.json())
+
+    def update(self, snapshotname: str, newname: str=None, newdescription: str=None) -> Snapshot:
+        if newname is None and newdescription is None:
+            raise AptlyAPIException("When updating a Snapshot you must at lease provide either a new name or a "
+                                    "new description.")
+        body = {}
+        if newname is not None:
+            body["Name"] = newname
+
+        if newdescription is not None:
+            body["Description"] = newdescription
+
+        resp = self.do_put("/api/snapshots/%s" % quote(snapshotname), json=body)
+        self.snapshot_from_response(resp.json())
 
     def show(self, snapshotname: str) -> Snapshot:
-        pass
+        resp = self.do_get("/api/snapshots/%s" % snapshotname)
+        self.snapshot_from_response(resp.json())
 
     def list_packages(self, snapshotname: str, query: str=None, with_deps: bool=False,
-                      detailed: bool=False) -> Union[Sequence[str], Sequence[Dict[str, str]]]:
-        pass
+                      detailed: bool=False) -> Sequence[Package]:
+        params = {}
+        if query is not None:
+            params["q"] = query
+        if with_deps:
+            params["withDeps"] = 1
+        if detailed:
+            params["format"] = "details"
+
+        resp = self.do_get("/api/snapshots/%s/packages" % quote(snapshotname), params=params)
+        ret = []
+        for rpkg in resp.json():
+            ret.append(PackageAPISection.package_from_response(rpkg))
+        return ret
 
     def delete(self, snapshotname: str, force: bool=False) -> None:
-        pass
+        params = None
+        if force:
+            params = {
+                "force": "1",
+            }
+
+        self.do_delete("/api/snapshots/%s" % quote(snapshotname), params=params)
 
     def diff(self, snapshot1: str, snapshot2: str) -> Sequence[Dict[str, str]]:
-        pass
+        resp = self.do_get("/api/snapshots/%s/diff/%s" % (quote(snapshot1), quote(snapshot2),))
+        return resp.json()

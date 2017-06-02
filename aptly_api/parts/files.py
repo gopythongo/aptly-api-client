@@ -31,4 +31,4 @@ class FilesAPISection(BaseAPIClient):
         return resp.json()
 
     def delete(self, path: str=None) -> None:
-        pass
+        self.do_delete("/api/files/%s" % path)
