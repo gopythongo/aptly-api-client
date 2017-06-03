@@ -6,14 +6,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import re
-import sys
-
-from distutils.core import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 _package_root = "."
 _root_package = 'aptly_api'
-
 
 with open("aptly_api/__init__.py", "rt", encoding="utf-8") as vf:
     lines = vf.readlines()
@@ -31,6 +27,10 @@ _requirements = [
     'requests==2.17.3',
 ]
 
+_test_requirements = [
+    'requests-mock==1.3.0',
+]
+
 setup(
     name='aptly-api-client',
     version=_version,
@@ -39,6 +39,7 @@ setup(
         '': _package_root,
     },
     install_requires=_requirements,
+    tests_require=_test_requirements,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

@@ -21,7 +21,7 @@ FileReport = NamedTuple('FileReport', [
 
 class ReposAPISection(BaseAPIClient):
     @staticmethod
-    def repo_from_response(api_response: Dict[str, str]):
+    def repo_from_response(api_response: Dict[str, str]) -> Repo:
         return Repo(
             name=api_response["Name"],
             default_component=api_response["DefaultComponent"] if "DefaultComponent" in api_response else None,

@@ -59,7 +59,7 @@ class BaseAPIClient:
             ret = "%s (%s)" % (ret, content["meta"],)
         return ret
 
-    def _makeurl(self, path: str):
+    def _makeurl(self, path: str) -> str:
         return urljoin(self.base_url, path)
 
     def do_get(self, urlpath: str, params: Dict[str, str]=None) -> requests.Response:

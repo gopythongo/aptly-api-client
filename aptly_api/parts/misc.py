@@ -8,8 +8,12 @@ from aptly_api.base import AptlyAPIException, BaseAPIClient
 
 
 class MiscAPISection(BaseAPIClient):
-    def graph(self, ext: str, layout: str="horizontal"):
+    def graph(self, ext: str, layout: str="horizontal") -> None:
         raise NotImplementedError("The Graph API is not yet supported")
 
     def version(self) -> str:
-        pass
+        resp = self.do_get("/api/version").json()
+        if "Version" in resp:
+            return resp["Version"]
+        else:
+            raise AptlyAPIException("Aptly server didn't return a valid response object:\n%s" % resp.text)

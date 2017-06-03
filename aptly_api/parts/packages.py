@@ -19,7 +19,7 @@ Package = NamedTuple('Package',[
 
 class PackageAPISection(BaseAPIClient):
     @staticmethod
-    def package_from_response(api_response: Dict[str, str]):
+    def package_from_response(api_response: Dict[str, str]) -> Package:
         return Package(
             key=api_response["Key"],
             short_key=api_response["ShortKey"] if "ShortKey" in api_response else None,
