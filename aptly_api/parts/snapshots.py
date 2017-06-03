@@ -85,7 +85,7 @@ class SnapshotAPISection(BaseAPIClient):
         if query is not None:
             params["q"] = query
         if with_deps:
-            params["withDeps"] = 1
+            params["withDeps"] = "1"
         if detailed:
             params["format"] = "details"
 
