@@ -16,3 +16,4 @@ build
 .idea
 .env
 __pycache__
+.coverage

@@ -3,9 +3,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 from typing import NamedTuple, Sequence, Dict, Union, List
 from urllib.parse import quote
+
+import sys
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 
@@ -36,7 +37,17 @@ class PublishAPISection(BaseAPIClient):
             origin=api_response["Origin"],
         )
 
-    def list(self, prefix: str=None) -> Sequence[PublishEndpoint]:
+    @staticmethod
+    def escape_prefix(prefix: str):
+        if "/" in prefix:
+            # prefix has not yet been quoted as described at
+            # https://www.aptly.info/doc/api/publish/
+            if "_" in prefix:
+                prefix = prefix.replace("_", "__")
+            prefix = prefix.replace("/", "_")
+        return prefix
+
+    def list(self) -> Sequence[PublishEndpoint]:
         resp = self.do_get("/api/publish")
         ret = []
         for rpe in resp.json():
@@ -51,6 +62,16 @@ class PublishAPISection(BaseAPIClient):
                 sign_skip: bool=False, sign_batch: bool=True, sign_gpgkey: str=None,
                 sign_keyring: str=None, sign_secret_keyring: str=None,
                 sign_passphrase: str=None, sign_passphrase_file: str=None) -> PublishEndpoint:
+        """
+        Example:
+
+        .. code-block:: python
+            p.publish(
+                sources=[{'Name': 'aptly-repo'}], architectures=['amd64'],
+                prefix='s3:myendpoint:test/a_1', distribution='test', sign_batch=True,
+                sign_gpgkey='A16BE921', sign_passphrase='*********'
+            )
+        """
         if not sign_skip and not sign_gpgkey:
             raise AptlyAPIException("Publish needs a gpgkey to sign with if sign_skip is False")
         if sign_passphrase is not None and sign_passphrase_file is not None:
@@ -62,7 +83,7 @@ class PublishAPISection(BaseAPIClient):
 
         url = "/api/publish"
         if prefix is not None and prefix != "":
-            url = "/api/publish/%s" % quote(prefix)
+            url = "/api/publish/%s" % quote(self.escape_prefix(prefix))
 
         body = {
             "SourceKind": source_kind,
@@ -104,6 +125,20 @@ class PublishAPISection(BaseAPIClient):
                sign_skip: bool=False, sign_batch: bool=True, sign_gpgkey: str=None,
                sign_keyring: str=None, sign_secret_keyring: str=None,
                sign_passphrase: str=None, sign_passphrase_file: str=None) -> PublishEndpoint:
+        """
+        Example:
+
+        .. code-block:: python
+            p.update(
+                prefix="s3:maurusnet:nightly/stretch", distribution="mn-nightly",
+                sign_batch=True, sign_gpgkey='A16BE921', sign_passphrase='***********'
+            )
+        """
+        if not sign_skip and not sign_gpgkey:
+            raise AptlyAPIException("Update needs a gpgkey to sign with if sign_skip is False")
+        if sign_passphrase is not None and sign_passphrase_file is not None:
+            raise AptlyAPIException("Can't use sign_passphrase and sign_passphrase_file at the same time")
+
         body = {}
         if snapshots is not None:
             for source in snapshots:
@@ -130,11 +165,13 @@ class PublishAPISection(BaseAPIClient):
             if sign_passphrase_file is not None:
                 body["Signing"]["PassphraseFile"] = sign_passphrase_file
 
-        resp = self.do_put("/api/publish/%s/%s" % (quote(prefix), quote(distribution),), json=body)
+        resp = self.do_put("/api/publish/%s/%s" %
+                           (quote(self.escape_prefix(prefix)), quote(distribution),), json=body)
         return self.endpoint_from_response(resp.json())
 
     def drop(self, *, prefix: str, distribution: str, force_delete: bool=False) -> None:
         params = {}
         if force_delete:
             params["force"] = "1"
-        self.do_delete("/api/publish/%s/%s" % (quote(prefix), quote(distribution),), params=params)
+        self.do_delete("/api/publish/%s/%s" %
+                       (quote(self.escape_prefix(prefix)), quote(distribution),), params=params)

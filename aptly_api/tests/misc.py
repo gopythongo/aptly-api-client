@@ -1,0 +1,23 @@
+# -* encoding: utf-8 *-
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+from typing import Any
+from unittest.case import TestCase
+
+import requests_mock
+
+from aptly_api.base import AptlyAPIException
+from aptly_api.parts.misc import MiscAPISection
+
+
+@requests_mock.Mocker(kw='rmock')
+class MiscAPISectionTests(TestCase):
+    def __init__(self, *args: Any):
+        super().__init__(*args)
+        self.mapi = MiscAPISection("http://test/")
+
+    def test_version(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.get("http://test/api/version", text='{"Version":"1.0.1"}')
+        self.assertEqual(self.mapi.version(), "1.0.1")

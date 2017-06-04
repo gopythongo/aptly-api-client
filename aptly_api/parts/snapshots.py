@@ -3,7 +3,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 from datetime import datetime
 from typing import NamedTuple, Sequence, Optional, Union, Dict
 from urllib.parse import quote
@@ -73,11 +72,11 @@ class SnapshotAPISection(BaseAPIClient):
             body["Description"] = newdescription
 
         resp = self.do_put("/api/snapshots/%s" % quote(snapshotname), json=body)
-        self.snapshot_from_response(resp.json())
+        return self.snapshot_from_response(resp.json())
 
     def show(self, snapshotname: str) -> Snapshot:
-        resp = self.do_get("/api/snapshots/%s" % snapshotname)
-        self.snapshot_from_response(resp.json())
+        resp = self.do_get("/api/snapshots/%s" % quote(snapshotname))
+        return self.snapshot_from_response(resp.json())
 
     def list_packages(self, snapshotname: str, query: str=None, with_deps: bool=False,
                       detailed: bool=False) -> Sequence[Package]:

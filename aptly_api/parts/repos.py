@@ -3,15 +3,18 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
-from typing import NamedTuple, Sequence, Dict, Union
+from typing import NamedTuple, Sequence, Dict
 from urllib.parse import quote
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 from aptly_api.parts.packages import PackageAPISection, Package
 
-Repo = NamedTuple('Repo', [('name', str), ('comment', str), ('default_distribution', str),
-                           ('default_component', str)])
+Repo = NamedTuple('Repo', [
+    ('name', str),
+    ('comment', str),
+    ('default_distribution', str),
+    ('default_component', str)
+])
 
 FileReport = NamedTuple('FileReport', [
     ('failed_files', Sequence[str]),
@@ -54,7 +57,7 @@ class ReposAPISection(BaseAPIClient):
         return self.repo_from_response(resp.json())
 
     def show(self, reponame: str) -> Repo:
-        resp = self.do_get("/api/repos/%s" % reponame)
+        resp = self.do_get("/api/repos/%s" % quote(reponame))
         return self.repo_from_response(resp.json())
 
     def search_packages(self, reponame: str, query: str=None, with_deps: bool=False,
@@ -110,9 +113,9 @@ class ReposAPISection(BaseAPIClient):
 
     def add_uploaded_file(self, reponame: str, dir: str, filename: str=None, remove_processed_files: bool=True,
                           force_replace: bool=False) -> FileReport:
-        params = {}
-        if not remove_processed_files:
-            params["noRemove"] = "1"
+        params = {
+            "noRemove": "0" if remove_processed_files else "1",
+        }
         if force_replace:
             params["forceReplace"] = "1"
 
