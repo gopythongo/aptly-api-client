@@ -171,3 +171,15 @@ class SnapshotAPISectionTests(TestCase):
                 {'Left': 'Pamd64 radicale 1.1.1 fbc974fa526f14e9', 'Right': None}
             ]
         )
+
+    def test_create_from_packages(self, *, rmock: requests_mock.Mocker):
+        rmock.post("http://test/api/snapshots",
+                   text='{"Name":"aptly-repo-1","CreatedAt":"2017-06-07T14:19:07.706408213Z","Description":"test"}')
+        self.assertEqual(
+            self.sapi.create_from_packages(
+                "aptly-repo-1",
+                description="test",
+                package_refs=["Pamd64 dirmngr 2.1.18-6 4c7412c5f0d7b30a"]
+            ),
+            Snapshot(name='aptly-repo-1', description='test', created_at='2017-06-07T14:19:07.706408213Z')
+        )
