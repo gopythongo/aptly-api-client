@@ -174,7 +174,7 @@ class SnapshotAPISectionTests(TestCase):
             ]
         )
 
-    def test_create_from_packages(self, *, rmock: requests_mock.Mocker):
+    def test_create_from_packages(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/snapshots",
                    text='{"Name":"aptly-repo-2","CreatedAt":"2017-06-07T14:19:07.706408213Z","Description":"test"}')
         self.assertEqual(

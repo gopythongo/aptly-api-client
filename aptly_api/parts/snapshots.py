@@ -4,18 +4,18 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from datetime import datetime
-from typing import NamedTuple, Sequence, Optional, Dict
+from typing import NamedTuple, Sequence, Optional, Dict, Union
 from urllib.parse import quote
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 from aptly_api.parts.packages import Package, PackageAPISection
 
-Snapshot = NamedTuple('Snapshot', [('name', str), ('description', str), ('created_at', datetime)])
+Snapshot = NamedTuple('Snapshot', [('name', str), ('description', str), ('created_at', str)])
 
 
 class SnapshotAPISection(BaseAPIClient):
     @staticmethod
-    def snapshot_from_response(api_response) -> Snapshot:
+    def snapshot_from_response(api_response: Dict[str, Union[str, None]]) -> Snapshot:
         return Snapshot(
             name=api_response["Name"],
             description=api_response["Description"] if "Description" in api_response else None,
@@ -47,7 +47,7 @@ class SnapshotAPISection(BaseAPIClient):
                              package_refs: Optional[Sequence[str]] = None) -> Snapshot:
         body = {
             "Name": snapshotname,
-        }
+        }  # type: Dict[str, Union[str, Sequence[str]]]
         if description is not None:
             body["Description"] = description
 
@@ -64,7 +64,7 @@ class SnapshotAPISection(BaseAPIClient):
         if newname is None and newdescription is None:
             raise AptlyAPIException("When updating a Snapshot you must at lease provide either a new name or a "
                                     "new description.")
-        body = {}
+        body = {}  # type: Dict[str, Union[str, Sequence[str]]]
         if newname is not None:
             body["Name"] = newname
 

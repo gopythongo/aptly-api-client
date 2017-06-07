@@ -3,7 +3,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from typing import NamedTuple, Sequence, Dict, Union, List
+from typing import NamedTuple, Sequence, Dict, Union, List, cast
 from urllib.parse import quote
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
@@ -20,23 +20,26 @@ PublishEndpoint = NamedTuple('PublishEndpoint', [
 ])
 
 
+T_BodyDict = Dict[str, Union[str, bool, Sequence[Dict[str, str]], Sequence[str], Dict[str, Union[bool, str]]]]
+
+
 class PublishAPISection(BaseAPIClient):
     @staticmethod
     def endpoint_from_response(api_response: Union[Dict[str, str], Dict[str, List[str]],
                                                    Dict[str, List[Dict[str, str]]]]) -> PublishEndpoint:
         return PublishEndpoint(
-            storage=api_response["Storage"],
-            prefix=api_response["Prefix"],
-            distribution=api_response["Distribution"],
-            source_kind=api_response["SourceKind"],
-            sources=api_response["Sources"],
-            architectures=api_response["Architectures"],
-            label=api_response["Label"],
-            origin=api_response["Origin"],
+            storage=cast(str, api_response["Storage"]),
+            prefix=cast(str, api_response["Prefix"]),
+            distribution=cast(str, api_response["Distribution"]),
+            source_kind=cast(str, api_response["SourceKind"]),
+            sources=cast(List[Dict[str, str]], api_response["Sources"]),
+            architectures=cast(List[str], api_response["Architectures"]),
+            label=cast(str, api_response["Label"]),
+            origin=cast(str, api_response["Origin"]),
         )
 
     @staticmethod
-    def escape_prefix(prefix: str):
+    def escape_prefix(prefix: str) -> str:
         if "/" in prefix:
             # prefix has not yet been quoted as described at
             # https://www.aptly.info/doc/api/publish/
@@ -86,7 +89,7 @@ class PublishAPISection(BaseAPIClient):
         body = {
             "SourceKind": source_kind,
             "Sources": sources,
-        }
+        }  # type: T_BodyDict
 
         if architectures is not None:
             body["Architectures"] = architectures
@@ -99,21 +102,22 @@ class PublishAPISection(BaseAPIClient):
         if force_overwrite:
             body["ForceOverwrite"] = True
 
-        body["Signing"] = {}
+        sign_dict = {}  # type: Dict[str, Union[bool,str]]
         if sign_skip:
-            body["Signing"]["Skip"] = True
+            sign_dict["Skip"] = True
         else:
-            body["Signing"]["Batch"] = sign_batch
+            sign_dict["Batch"] = sign_batch
             if sign_gpgkey is not None:
-                body["Signing"]["GpgKey"] = sign_gpgkey
+                sign_dict["GpgKey"] = sign_gpgkey
             if sign_keyring is not None:
-                body["Signing"]["Keyring"] = sign_keyring
+                sign_dict["Keyring"] = sign_keyring
             if sign_secret_keyring is not None:
-                body["Signing"]["SecretKeyring"] = sign_secret_keyring
+                sign_dict["SecretKeyring"] = sign_secret_keyring
             if sign_passphrase is not None:
-                body["Signing"]["Passphrase"] = sign_passphrase
+                sign_dict["Passphrase"] = sign_passphrase
             if sign_passphrase_file is not None:
-                body["Signing"]["PassphraseFile"] = sign_passphrase_file
+                sign_dict["PassphraseFile"] = sign_passphrase_file
+        body["Signing"] = sign_dict
 
         resp = self.do_post(url, json=body)
         return self.endpoint_from_response(resp.json())
@@ -137,7 +141,8 @@ class PublishAPISection(BaseAPIClient):
         if sign_passphrase is not None and sign_passphrase_file is not None:
             raise AptlyAPIException("Can't use sign_passphrase and sign_passphrase_file at the same time")
 
-        body = {}
+        body = {}  # type: T_BodyDict
+
         if snapshots is not None:
             for source in snapshots:
                 if "name" not in source and "Name" not in source:
@@ -147,21 +152,22 @@ class PublishAPISection(BaseAPIClient):
         if force_overwrite:
             body["ForceOverwrite"] = True
 
-        body["Signing"] = {}
+        sign_dict = {}  # type: Dict[str, Union[bool,str]]
         if sign_skip:
-            body["Signing"]["Skip"] = True
+            sign_dict["Skip"] = True
         else:
-            body["Signing"]["Batch"] = sign_batch
+            sign_dict["Batch"] = sign_batch
             if sign_gpgkey is not None:
-                body["Signing"]["GpgKey"] = sign_gpgkey
+                sign_dict["GpgKey"] = sign_gpgkey
             if sign_keyring is not None:
-                body["Signing"]["Keyring"] = sign_keyring
+                sign_dict["Keyring"] = sign_keyring
             if sign_secret_keyring is not None:
-                body["Signing"]["SecretKeyring"] = sign_secret_keyring
+                sign_dict["SecretKeyring"] = sign_secret_keyring
             if sign_passphrase is not None:
-                body["Signing"]["Passphrase"] = sign_passphrase
+                sign_dict["Passphrase"] = sign_passphrase
             if sign_passphrase_file is not None:
-                body["Signing"]["PassphraseFile"] = sign_passphrase_file
+                sign_dict["PassphraseFile"] = sign_passphrase_file
+        body["Signing"] = sign_dict
 
         resp = self.do_put("/api/publish/%s/%s" %
                            (quote(self.escape_prefix(prefix)), quote(distribution),), json=body)

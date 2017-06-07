@@ -21,5 +21,5 @@ class Client:
         self.repos = ReposAPISection(self.aptly_server_url)
         self.snapshots = SnapshotAPISection(self.aptly_server_url)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Client (Aptly API Client) <%s>" % self.aptly_server_url

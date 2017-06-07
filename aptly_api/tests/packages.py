@@ -17,7 +17,7 @@ class PackageAPISectionTests(TestCase):
         super().__init__(*args)
         self.papi = PackageAPISection("http://test/")
 
-    def test_show(self, *, rmock: requests_mock.Mocker):
+    def test_show(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.get(
             "http://test/api/packages/Pamd64%20authserver%200.1.14~dev0-1%201cc572a93625a9c9",
             text="""{"Architecture":"amd64",

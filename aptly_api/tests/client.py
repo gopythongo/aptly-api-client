@@ -3,7 +3,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from typing import Any
+from typing import Any, cast
 from unittest.case import TestCase
 
 import requests
@@ -30,11 +30,11 @@ class ClientTests(TestCase):
 
     def test_error_no_error(self) -> None:
         class MockResponse:
-            def __init__(self, status_code=200):
-                self.status_code = 200
+            def __init__(self, status_code: int=200) -> None:
+                self.status_code = status_code
 
         self.assertEqual(
-            self.client.files._error_from_response(MockResponse()),
+            self.client.files._error_from_response(cast(requests.Response, MockResponse())),
             "no error (status 200)"
         )
 
