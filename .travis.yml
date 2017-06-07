@@ -8,6 +8,8 @@ install:
     - pip install tox
 script:
     - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then tox -e coverage,coverage-report,flake8,doc8,pep257,mypy; fi
+after_success:
+    - coveralls
 matrix:
     fast_finish: true
 notifications:
