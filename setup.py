@@ -27,10 +27,6 @@ _requirements = [
     'requests==2.17.3',
 ]
 
-_test_requirements = [
-    'requests-mock==1.3.0',
-]
-
 setup(
     name='aptly-api-client',
     version=_version,
@@ -39,7 +35,6 @@ setup(
         '': _package_root,
     },
     install_requires=_requirements,
-    tests_require=_test_requirements,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
