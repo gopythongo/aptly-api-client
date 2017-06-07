@@ -25,6 +25,7 @@ _packages = find_packages(_package_root, exclude=["*.tests", "*.tests.*", "tests
 _requirements = [
     'typing==3.6.1',
     'requests==2.17.3',
+    'iso8601==0.1.11',
 ]
 
 setup(

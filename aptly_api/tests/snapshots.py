@@ -6,6 +6,7 @@
 from typing import Any
 from unittest.case import TestCase
 
+import iso8601
 import requests_mock
 
 from aptly_api.base import AptlyAPIException
@@ -35,13 +36,13 @@ class SnapshotAPISectionTests(TestCase):
                     name='stretch-security-1',
                     description='Snapshot from mirror [stretch-security]: http://security.debian.org/debian-security/ '
                                 'stretch/updates',
-                    created_at='2017-06-03T21:36:22.2692213Z'
+                    created_at=iso8601.parse_date('2017-06-03T21:36:22.2692213Z')
                 ),
                 Snapshot(
                     name='stretch-updates-1',
                     description='Snapshot from mirror [stretch-updates]: http://ftp-stud.hs-esslingen.de/debian/ '
                                 'stretch-updates',
-                    created_at='2017-06-03T21:36:22.431767659Z'
+                    created_at=iso8601.parse_date('2017-06-03T21:36:22.2692213Z')
                 )
             ]
         )
@@ -63,7 +64,7 @@ class SnapshotAPISectionTests(TestCase):
                                        description='Snapshot from local repo [aptly-repo]'),
             Snapshot(name='aptly-repo-1',
                      description='Snapshot from local repo [aptly-repo]',
-                     created_at='2017-06-03T23:43:40.275605639Z')
+                     created_at=iso8601.parse_date('2017-06-03T21:36:22.2692213Z'))
         )
 
     def test_list_packages(self, *, rmock: requests_mock.Mocker) -> None:
@@ -144,7 +145,7 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-1',
                 description='Snapshot from local repo [aptly-repo]',
-                created_at='2017-06-03T23:43:40.275605639Z'
+                created_at=iso8601.parse_date('2017-06-03T21:36:22.2692213Z')
             )
         )
 
@@ -154,7 +155,11 @@ class SnapshotAPISectionTests(TestCase):
                        '"Description":"test"}')
         self.assertEqual(
             self.sapi.update("aptly-repo-1", newname="aptly-repo-2", newdescription="test"),
-            Snapshot(name='aptly-repo-2', description='test', created_at='2017-06-03T23:43:40.275605639Z')
+            Snapshot(
+                name='aptly-repo-2',
+                description='test',
+                created_at=iso8601.parse_date('2017-06-03T21:36:22.2692213Z')
+            )
         )
 
     def test_delete(self, *, rmock: requests_mock.Mocker) -> None:
@@ -184,5 +189,9 @@ class SnapshotAPISectionTests(TestCase):
                 package_refs=["Pamd64 dirmngr 2.1.18-6 4c7412c5f0d7b30a"],
                 source_snapshots=["aptly-repo-1"]
             ),
-            Snapshot(name='aptly-repo-2', description='test', created_at='2017-06-07T14:19:07.706408213Z')
+            Snapshot(
+                name='aptly-repo-2',
+                description='test',
+                created_at=iso8601.parse_date('2017-06-03T21:36:22.2692213Z')
+            )
         )

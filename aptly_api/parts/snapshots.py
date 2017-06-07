@@ -7,10 +7,12 @@ from datetime import datetime
 from typing import NamedTuple, Sequence, Optional, Dict, Union
 from urllib.parse import quote
 
+import iso8601
+
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 from aptly_api.parts.packages import Package, PackageAPISection
 
-Snapshot = NamedTuple('Snapshot', [('name', str), ('description', str), ('created_at', str)])
+Snapshot = NamedTuple('Snapshot', [('name', str), ('description', str), ('created_at', datetime)])
 
 
 class SnapshotAPISection(BaseAPIClient):
@@ -19,7 +21,7 @@ class SnapshotAPISection(BaseAPIClient):
         return Snapshot(
             name=api_response["Name"],
             description=api_response["Description"] if "Description" in api_response else None,
-            created_at=api_response["CreatedAt"] if "CreatedAt" in api_response else None,
+            created_at=iso8601.parse_date(api_response["CreatedAt"]) if "CreatedAt" in api_response else None,
         )
 
     def list(self, sort: str='name') -> Sequence[Snapshot]:
