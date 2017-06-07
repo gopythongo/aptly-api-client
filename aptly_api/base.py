@@ -4,7 +4,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from typing import NamedTuple, Sequence, Dict, Tuple, Optional, Union, List, Any
+from typing import Sequence, Dict, Tuple, Optional, Union, List, Any
 from urllib.parse import urljoin
 
 from typing.io import IO

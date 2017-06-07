@@ -33,12 +33,14 @@ class SnapshotAPISectionTests(TestCase):
             [
                 Snapshot(
                     name='stretch-security-1',
-                    description='Snapshot from mirror [stretch-security]: http://security.debian.org/debian-security/ stretch/updates',
+                    description='Snapshot from mirror [stretch-security]: http://security.debian.org/debian-security/ '
+                                'stretch/updates',
                     created_at='2017-06-03T21:36:22.2692213Z'
                 ),
                 Snapshot(
                     name='stretch-updates-1',
-                    description='Snapshot from mirror [stretch-updates]: http://ftp-stud.hs-esslingen.de/debian/ stretch-updates',
+                    description='Snapshot from mirror [stretch-updates]: http://ftp-stud.hs-esslingen.de/debian/ '
+                                'stretch-updates',
                     created_at='2017-06-03T21:36:22.431767659Z'
                 )
             ]

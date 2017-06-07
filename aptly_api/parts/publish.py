@@ -6,8 +6,6 @@
 from typing import NamedTuple, Sequence, Dict, Union, List
 from urllib.parse import quote
 
-import sys
-
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 
 PublishEndpoint = NamedTuple('PublishEndpoint', [
