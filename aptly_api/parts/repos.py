@@ -3,7 +3,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from typing import NamedTuple, Sequence, Dict
+from typing import NamedTuple, Sequence, Dict, Union, cast
 from urllib.parse import quote
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
@@ -33,10 +33,10 @@ class ReposAPISection(BaseAPIClient):
         )
 
     @staticmethod
-    def filereport_from_response(api_response: Dict[str, str]):
+    def filereport_from_response(api_response: Dict[str, Union[Sequence[str], Dict[str, Sequence[str]]]]) -> FileReport:
         return FileReport(
-            failed_files=api_response["FailedFiles"],
-            report=api_response["Report"],
+            failed_files=cast(Sequence[str], api_response["FailedFiles"]),
+            report=cast(Dict[str, Sequence[str]], api_response["Report"]),
         )
 
     def create(self, reponame: str, comment: str=None, default_distribution: str=None,
@@ -82,7 +82,7 @@ class ReposAPISection(BaseAPIClient):
         return ret
 
     def edit(self, reponame: str, comment: str=None, default_distribution: str=None,
-             default_component: str=None) -> None:
+             default_component: str=None) -> Repo:
         if comment is None and default_component is None and default_distribution is None:
             raise AptlyAPIException("edit requires at least one of 'comment', 'default_distribution' or "
                                     "'default_component'.")
@@ -127,13 +127,13 @@ class ReposAPISection(BaseAPIClient):
 
         return self.filereport_from_response(resp.json())
 
-    def add_packages_by_key(self, reponame: str, *package_keys: str):
+    def add_packages_by_key(self, reponame: str, *package_keys: str) -> Repo:
         resp = self.do_post("/api/repos/%s/packages" % quote(reponame), json={
             "PackageRefs": package_keys,
         })
         return self.repo_from_response(resp.json())
 
-    def delete_packages_by_key(self, reponame: str, *package_keys: str):
+    def delete_packages_by_key(self, reponame: str, *package_keys: str) -> Repo:
         resp = self.do_delete("/api/repos/%s/packages" % quote(reponame), json={
             "PackageRefs": package_keys,
         })

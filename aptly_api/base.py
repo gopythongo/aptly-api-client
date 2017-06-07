@@ -4,7 +4,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from typing import NamedTuple, Sequence, Dict, Tuple, Optional, Union, List, Any
+from typing import Sequence, Dict, Tuple, Optional, Union, List, Any, MutableMapping
 from urllib.parse import urljoin
 
 from typing.io import IO
@@ -14,7 +14,7 @@ from requests.auth import AuthBase
 
 
 class AptlyAPIException(Exception):
-    def __init__(self, *args, status_code: int=0) -> None:
+    def __init__(self, *args: Any, status_code: int=0) -> None:
         super().__init__(*args)
         self.status_code = status_code
 
@@ -64,16 +64,16 @@ class BaseAPIClient:
 
         return resp
 
-    def do_post(self, urlpath: str, data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]]=None,
+    def do_post(self, urlpath: str, data: Union[bytes, MutableMapping[str, str], IO[Any]]=None,
                 params: Dict[str, str]=None,
                 files: Union[
                     Dict[str, IO],
                     Dict[str, Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]],
                     Dict[str, Tuple[str, str]],
                     Sequence[Tuple[str, IO]],
-                    Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]],
+                    Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]]
                 ]=None,
-                json: Union[List[Dict[str, Any]], Dict[str, Any]]=None) -> requests.Response:
+                json: MutableMapping[Any, Any]=None) -> requests.Response:
         resp = requests.post(self._makeurl(urlpath), data=data, params=params, files=files, json=json,
                              verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
 
@@ -82,15 +82,15 @@ class BaseAPIClient:
 
         return resp
 
-    def do_put(self, urlpath: str, data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]]=None,
+    def do_put(self, urlpath: str, data: Union[bytes, MutableMapping[str, str], IO[Any]]=None,
                files: Union[
                    Dict[str, IO],
                    Dict[str, Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]],
                    Dict[str, Tuple[str, str]],
                    Sequence[Tuple[str, IO]],
-                   Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]],
+                   Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]]
                ]=None,
-               json: Union[List[Dict[str, Any]], Dict[str, Any]]=None) -> requests.Response:
+               json: MutableMapping[Any, Any]=None) -> requests.Response:
         resp = requests.put(self._makeurl(urlpath), data=data, files=files, json=json,
                             verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
 

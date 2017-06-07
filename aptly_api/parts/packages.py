@@ -10,7 +10,7 @@ from urllib.parse import quote
 from aptly_api.base import BaseAPIClient
 
 
-Package = NamedTuple('Package',[
+Package = NamedTuple('Package', [
     ('key', str),
     ('short_key', str),
     ('files_hash', str),

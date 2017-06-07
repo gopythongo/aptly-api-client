@@ -14,7 +14,7 @@ from aptly_api.parts.misc import MiscAPISection
 
 @requests_mock.Mocker(kw='rmock')
 class MiscAPISectionTests(TestCase):
-    def __init__(self, *args: Any):
+    def __init__(self, *args: Any) -> None:
         super().__init__(*args)
         self.mapi = MiscAPISection("http://test/")
 

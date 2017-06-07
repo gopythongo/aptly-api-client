@@ -10,3 +10,6 @@ from aptly_api.base import AptlyAPIException
 
 
 version = "0.1.0"
+
+
+__all__ = ['Client', 'AptlyAPIException', 'version']
