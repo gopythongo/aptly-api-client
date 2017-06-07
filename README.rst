@@ -1,8 +1,8 @@
 Python 3 Aptly API client
 =========================
 
-.. image:: https://coveralls.io/repos/github/gopythongo/aptly-api-client/badge.svg?branch=master
-    :target: https://coveralls.io/github/gopythongo/aptly-api-client?branch=master
+.. image:: https://coveralls.io/repos/github/gopythongo/aptly-api-client/badge.svg?branch=HEAD
+    :target: https://coveralls.io/github/gopythongo/aptly-api-client?branch=HEAD
 
 .. image:: https://travis-ci.org/gopythongo/aptly-api-client.svg?branch=master
     :target: https://travis-ci.org/gopythongo/aptly-api-client
