@@ -8,6 +8,7 @@ from typing import NamedTuple, Sequence, Optional, Dict, Union
 from urllib.parse import quote
 
 import iso8601
+import pytz
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 from aptly_api.parts.packages import Package, PackageAPISection
@@ -21,7 +22,9 @@ class SnapshotAPISection(BaseAPIClient):
         return Snapshot(
             name=api_response["Name"],
             description=api_response["Description"] if "Description" in api_response else None,
-            created_at=iso8601.parse_date(api_response["CreatedAt"]) if "CreatedAt" in api_response else None,
+            created_at=iso8601.parse_date(
+                api_response["CreatedAt"], default_timezone=pytz.UTC
+            ) if "CreatedAt" in api_response else None,
         )
 
     def list(self, sort: str='name') -> Sequence[Snapshot]:
