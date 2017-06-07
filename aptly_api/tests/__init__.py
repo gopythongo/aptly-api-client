@@ -5,6 +5,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from .base import *
+from .client import *
 from .files import *
 from .misc import *
 from .packages import *

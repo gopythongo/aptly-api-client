@@ -21,3 +21,12 @@ class MiscAPISectionTests(TestCase):
     def test_version(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.get("http://test/api/version", text='{"Version":"1.0.1"}')
         self.assertEqual(self.mapi.version(), "1.0.1")
+
+    def test_graph(self, *, rmock: requests_mock.Mocker) -> None:
+        with self.assertRaises(NotImplementedError):
+            self.mapi.graph("png")
+
+    def test_version_error(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.get("http://test/api/version", text='{"droenk": "blah"}')
+        with self.assertRaises(AptlyAPIException):
+            self.mapi.version()

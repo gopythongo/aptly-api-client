@@ -89,7 +89,7 @@ class ReposAPISectionTests(TestCase):
                  }]"""
         )
         self.assertListEqual(
-            self.rapi.search_packages("aptly-repo", detailed=True),
+            self.rapi.search_packages("aptly-repo", detailed=True, with_deps=True, query="Name (authserver)"),
             [
                 Package(
                     key='Pamd64 authserver 0.1.14~dev0-1 1cc572a93625a9c9',
@@ -158,7 +158,18 @@ class ReposAPISectionTests(TestCase):
                    text='{"FailedFiles":[],"Report":{"Warnings":[],'
                         '"Added":["dirmngr_2.1.18-6_amd64 added"],"Removed":[]}}')
         self.assertEqual(
-            self.rapi.add_uploaded_file("aptly-repo", "test", "dirmngr_2.1.18-6_amd64.deb"),
+            self.rapi.add_uploaded_file("aptly-repo", "test", "dirmngr_2.1.18-6_amd64.deb", force_replace=True),
+            FileReport(failed_files=[],
+                       report={'Added': ['dirmngr_2.1.18-6_amd64 added'],
+                               'Removed': [], 'Warnings': []})
+        )
+
+    def test_add_dir(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.post("http://test/api/repos/aptly-repo/file/test",
+                   text='{"FailedFiles":[],"Report":{"Warnings":[],'
+                        '"Added":["dirmngr_2.1.18-6_amd64 added"],"Removed":[]}}')
+        self.assertEqual(
+            self.rapi.add_uploaded_file("aptly-repo", "test", force_replace=True),
             FileReport(failed_files=[],
                        report={'Added': ['dirmngr_2.1.18-6_amd64 added'],
                                'Removed': [], 'Warnings': []})
@@ -181,3 +192,7 @@ class ReposAPISectionTests(TestCase):
             self.rapi.delete_packages_by_key("aptly-repo", "Pamd64 dirmngr 2.1.18-6 4c7412c5f0d7b30a"),
             Repo(name='aptly-repo', comment='', default_distribution='', default_component=''),
         )
+
+    def test_search_invalid_params(self, *, rmock: requests_mock.Mocker) -> None:
+        with self.assertRaises(AptlyAPIException):
+            self.rapi.search_packages("aptly-repo", with_deps=True)

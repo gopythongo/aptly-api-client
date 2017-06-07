@@ -43,16 +43,9 @@ class BaseAPIClient:
         if isinstance(rcnt, dict):
             content = rcnt
         else:
-            if isinstance(rcnt, str):
-                return rcnt
+            content = rcnt[0]
 
-            try:
-                content = rcnt[0]
-            except TypeError:
-                return "Error in error handling: Failed to figure out what type the server returned. " \
-                       "%s" % str(rcnt)
-
-        ret = "%s - %s - " % (resp.status_code, resp.reason,)
+        ret = "%s - %s -" % (resp.status_code, resp.reason)
         if "error" in content:
             ret = "%s %s" % (ret, content["error"],)
         if "meta" in content:
