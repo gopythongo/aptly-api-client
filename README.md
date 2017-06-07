@@ -12,7 +12,6 @@ standalone library from Pypi.
 pip install aptly-api-client
 ```
 
-
 License
 =======
 
