@@ -1,16 +1,19 @@
 Python 3 Aptly API client
 =========================
 
-[![Coverage Status](https://coveralls.io/repos/github/gopythongo/aptly-api-client/badge.svg?branch=master)](https://coveralls.io/github/gopythongo/aptly-api-client?branch=master)
+.. image:: https://coveralls.io/repos/github/gopythongo/aptly-api-client/badge.svg?branch=master
+   git :target: https://coveralls.io/github/gopythongo/aptly-api-client?branch=master
 
-This is a thin abstraction layer for interfacing with 
+
+This is a thin abstraction layer for interfacing with
 [Aptly's HTTP API](https://www.aptly.info/doc/api/). It's used by
-[GoPythonGo](https://github.com/gopythongo/gopythongo/), but can be used as a 
+[GoPythonGo](https://github.com/gopythongo/gopythongo/), but can be used as a
 standalone library from Pypi.
 
-```
-pip install aptly-api-client
-```
+.. code-block:: python
+
+    pip install aptly-api-client
+
 
 License
 =======
