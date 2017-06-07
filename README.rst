@@ -51,7 +51,7 @@ certificates, HTTP Basic authentication etc.
 License
 =======
 
-Copyright (c) 2016-2017, Jonas Maurus
+Copyright (c) 2016-2017, Jonas Maurus.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
