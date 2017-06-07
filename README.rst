@@ -30,20 +30,20 @@ certificates, HTTP Basic authentication etc.
 
 .. code-block:: python
 
-# initialize a client
-from aptly_api import Client
-aptly = Client("http://aptly-endpoint.test/")
+    # initialize a client
+    from aptly_api import Client
+    aptly = Client("http://aptly-endpoint.test/")
 
-# create a repository
-aptly.repos.create("myrepo", comment="a test repo",
-                   default_distribution="mydist",
-                   default_component="main")
+    # create a repository
+    aptly.repos.create("myrepo", comment="a test repo",
+                       default_distribution="mydist",
+                       default_component="main")
 
-# upload a package
-aptly.files.upload("test_folder", "/tmp/mypkg_1.0_amd64.deb")
+    # upload a package
+    aptly.files.upload("test_folder", "/tmp/mypkg_1.0_amd64.deb")
 
-# add the package to the repo
-aptly.repos.add_uploaded_file("myrepo", "test_folder")
+    # add the package to the repo
+    aptly.repos.add_uploaded_file("myrepo", "test_folder")
 
 
 License
