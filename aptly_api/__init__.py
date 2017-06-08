@@ -7,9 +7,13 @@
 
 from aptly_api.client import Client
 from aptly_api.base import AptlyAPIException
+from aptly_api.parts.packages import Package
+from aptly_api.parts.publish import PublishEndpoint
+from aptly_api.parts.repos import Repo, FileReport
+from aptly_api.parts.snapshots import Snapshot
+
+version = "0.1.1"
 
 
-version = "0.1.0"
-
-
-__all__ = ['Client', 'AptlyAPIException', 'version']
+__all__ = ['Client', 'AptlyAPIException', 'version', 'Package', 'PublishEndpoint', 'Repo', 'FileReport',
+           'Snapshot']
