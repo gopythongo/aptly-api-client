@@ -281,3 +281,7 @@ class PublishAPISectionTests(TestCase):
             self.papi.escape_prefix("test/a"),
             "test_a"
         )
+        self.assertEqual(
+            self.papi.escape_prefix("."),
+            ":."
+        )

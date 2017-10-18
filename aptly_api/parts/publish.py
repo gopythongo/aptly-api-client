@@ -40,6 +40,8 @@ class PublishAPISection(BaseAPIClient):
 
     @staticmethod
     def escape_prefix(prefix: str) -> str:
+        if prefix == ".":
+            return ":."
         if "/" in prefix:
             # prefix has not yet been quoted as described at
             # https://www.aptly.info/doc/api/publish/
