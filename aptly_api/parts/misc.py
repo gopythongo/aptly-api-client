@@ -11,7 +11,7 @@ class MiscAPISection(BaseAPIClient):
         raise NotImplementedError("The Graph API is not yet supported")
 
     def version(self) -> str:
-        resp = self.do_get("/api/version")
+        resp = self.do_get("api/version")
         if "Version" in resp.json():
             return resp.json()["Version"]
         else:

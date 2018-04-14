@@ -28,9 +28,6 @@ class BaseAPIClient:
         self.http_auth = http_auth
         self.exc_class = AptlyAPIException
 
-        while self.base_url.endswith("/"):
-            self.base_url = self.base_url[:-1]
-
     def _error_from_response(self, resp: requests.Response) -> str:
         if resp.status_code == 200:
             return "no error (status 200)"
