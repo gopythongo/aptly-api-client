@@ -17,3 +17,6 @@ build
 .env
 __pycache__
 .coverage
+.mypy_cache
+.tox
+.toxenv
