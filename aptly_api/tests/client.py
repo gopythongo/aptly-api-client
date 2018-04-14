@@ -28,15 +28,18 @@ class ClientTests(TestCase):
             "Client (Aptly API Client) <http://test/>"
         )
 
-    def test_api_root_url(self) -> None:
-        cl = AptlyClient("http://test////")
-        self.assertEqual(cl.files.base_url, "http://test")
-
     @requests_mock.Mocker(kw='rmock')
     def test_api_subdir_get(self, *, rmock: requests_mock.Mocker) -> None:
-        cl = AptlyClient("http://test/basedir//")
-        rmock.register_uri("GET", "mock://test/basedir/api", status_code=200, text='', reason="test")
-        cl.files.do_get("/api/test")
+        # register mock:// scheme with urllib.parse
+        import urllib.parse
+        urllib.parse.uses_netloc += ['mock']
+        urllib.parse.uses_relative += ['mock']
+        urllib.parse.uses_fragment += ['mock']
+        urllib.parse.uses_params += ['mock']
+
+        cl = AptlyClient("mock://test/basedir/")
+        rmock.get("mock://test/basedir/api/test", status_code=200, text='')
+        cl.files.do_get("api/test")
         self.assertTrue(rmock.called)
 
     def test_error_no_error(self) -> None:
