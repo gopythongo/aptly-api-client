@@ -31,7 +31,7 @@ class SnapshotAPISection(BaseAPIClient):
         if sort not in ['name', 'time']:
             raise AptlyAPIException("Snapshot LIST only supports two sort modes: 'name' and 'time'. %s is not "
                                     "supported." % sort)
-        resp = self.do_get("/api/snapshots")
+        resp = self.do_get("api/snapshots")
         ret = []
         for rsnap in resp.json():
             ret.append(self.snapshot_from_response(rsnap))
@@ -44,7 +44,7 @@ class SnapshotAPISection(BaseAPIClient):
         if description is not None:
             body["Description"] = description
 
-        resp = self.do_post("/api/repos/%s/snapshots" % quote(reponame), json=body)
+        resp = self.do_post("api/repos/%s/snapshots" % quote(reponame), json=body)
         return self.snapshot_from_response(resp.json())
 
     def create_from_packages(self, snapshotname: str, description: str=None,
@@ -62,7 +62,7 @@ class SnapshotAPISection(BaseAPIClient):
         if package_refs is not None:
             body["PackageRefs"] = package_refs
 
-        resp = self.do_post("/api/snapshots", json=body)
+        resp = self.do_post("api/snapshots", json=body)
         return self.snapshot_from_response(resp.json())
 
     def update(self, snapshotname: str, newname: str=None, newdescription: str=None) -> Snapshot:
@@ -76,11 +76,11 @@ class SnapshotAPISection(BaseAPIClient):
         if newdescription is not None:
             body["Description"] = newdescription
 
-        resp = self.do_put("/api/snapshots/%s" % quote(snapshotname), json=body)
+        resp = self.do_put("api/snapshots/%s" % quote(snapshotname), json=body)
         return self.snapshot_from_response(resp.json())
 
     def show(self, snapshotname: str) -> Snapshot:
-        resp = self.do_get("/api/snapshots/%s" % quote(snapshotname))
+        resp = self.do_get("api/snapshots/%s" % quote(snapshotname))
         return self.snapshot_from_response(resp.json())
 
     def list_packages(self, snapshotname: str, query: str=None, with_deps: bool=False,
@@ -93,7 +93,7 @@ class SnapshotAPISection(BaseAPIClient):
         if detailed:
             params["format"] = "details"
 
-        resp = self.do_get("/api/snapshots/%s/packages" % quote(snapshotname), params=params)
+        resp = self.do_get("api/snapshots/%s/packages" % quote(snapshotname), params=params)
         ret = []
         for rpkg in resp.json():
             ret.append(PackageAPISection.package_from_response(rpkg))
@@ -106,8 +106,8 @@ class SnapshotAPISection(BaseAPIClient):
                 "force": "1",
             }
 
-        self.do_delete("/api/snapshots/%s" % quote(snapshotname), params=params)
+        self.do_delete("api/snapshots/%s" % quote(snapshotname), params=params)
 
     def diff(self, snapshot1: str, snapshot2: str) -> Sequence[Dict[str, str]]:
-        resp = self.do_get("/api/snapshots/%s/diff/%s" % (quote(snapshot1), quote(snapshot2),))
+        resp = self.do_get("api/snapshots/%s/diff/%s" % (quote(snapshot1), quote(snapshot2),))
         return resp.json()

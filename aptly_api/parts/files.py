@@ -12,9 +12,9 @@ from aptly_api.base import BaseAPIClient, AptlyAPIException
 class FilesAPISection(BaseAPIClient):
     def list(self, directory: str=None) -> Sequence[str]:
         if directory is None:
-            resp = self.do_get("/api/files")
+            resp = self.do_get("api/files")
         else:
-            resp = self.do_get("/api/files/%s" % directory)
+            resp = self.do_get("api/files/%s" % directory)
 
         return resp.json()
 
@@ -27,7 +27,7 @@ class FilesAPISection(BaseAPIClient):
             to_upload.append((f, fh),)
 
         try:
-            resp = self.do_post("/api/files/%s" % destination,
+            resp = self.do_post("api/files/%s" % destination,
                                 files=to_upload)
         except AptlyAPIException:
             raise
@@ -39,4 +39,4 @@ class FilesAPISection(BaseAPIClient):
         return resp.json()
 
     def delete(self, path: str=None) -> None:
-        self.do_delete("/api/files/%s" % path)
+        self.do_delete("api/files/%s" % path)
