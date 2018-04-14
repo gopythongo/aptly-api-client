@@ -52,12 +52,12 @@ class ReposAPISection(BaseAPIClient):
         if default_component:
             data["DefaultComponent"] = default_component
 
-        resp = self.do_post("/api/repos", json=data)
+        resp = self.do_post("api/repos", json=data)
 
         return self.repo_from_response(resp.json())
 
     def show(self, reponame: str) -> Repo:
-        resp = self.do_get("/api/repos/%s" % quote(reponame))
+        resp = self.do_get("api/repos/%s" % quote(reponame))
         return self.repo_from_response(resp.json())
 
     def search_packages(self, reponame: str, query: str=None, with_deps: bool=False,
@@ -75,7 +75,7 @@ class ReposAPISection(BaseAPIClient):
         if detailed:
             params["format"] = "details"
 
-        resp = self.do_get("/api/repos/%s/packages" % quote(reponame), params=params)
+        resp = self.do_get("api/repos/%s/packages" % quote(reponame), params=params)
         ret = []
         for rpkg in resp.json():
             ret.append(PackageAPISection.package_from_response(rpkg))
@@ -95,11 +95,11 @@ class ReposAPISection(BaseAPIClient):
         if default_component is not None:
             body["DefaultComponent"] = default_component
 
-        resp = self.do_put("/api/repos/%s" % quote(reponame), json=body)
+        resp = self.do_put("api/repos/%s" % quote(reponame), json=body)
         return self.repo_from_response(resp.json())
 
     def list(self) -> Sequence[Repo]:
-        resp = self.do_get("/api/repos")
+        resp = self.do_get("api/repos")
 
         repos = []
         for rdesc in resp.json():
@@ -109,7 +109,7 @@ class ReposAPISection(BaseAPIClient):
         return repos
 
     def delete(self, reponame: str, force: bool=False) -> None:
-        self.do_delete("/api/repos/%s" % quote(reponame), params={"force": "1" if force else "0"})
+        self.do_delete("api/repos/%s" % quote(reponame), params={"force": "1" if force else "0"})
 
     def add_uploaded_file(self, reponame: str, dir: str, filename: str=None, remove_processed_files: bool=True,
                           force_replace: bool=False) -> FileReport:
@@ -120,21 +120,21 @@ class ReposAPISection(BaseAPIClient):
             params["forceReplace"] = "1"
 
         if filename is None:
-            resp = self.do_post("/api/repos/%s/file/%s" % (quote(reponame), quote(dir),), params=params)
+            resp = self.do_post("api/repos/%s/file/%s" % (quote(reponame), quote(dir),), params=params)
         else:
-            resp = self.do_post("/api/repos/%s/file/%s/%s" % (quote(reponame), quote(dir), quote(filename),),
+            resp = self.do_post("api/repos/%s/file/%s/%s" % (quote(reponame), quote(dir), quote(filename),),
                                 params=params)
 
         return self.filereport_from_response(resp.json())
 
     def add_packages_by_key(self, reponame: str, *package_keys: str) -> Repo:
-        resp = self.do_post("/api/repos/%s/packages" % quote(reponame), json={
+        resp = self.do_post("api/repos/%s/packages" % quote(reponame), json={
             "PackageRefs": package_keys,
         })
         return self.repo_from_response(resp.json())
 
     def delete_packages_by_key(self, reponame: str, *package_keys: str) -> Repo:
-        resp = self.do_delete("/api/repos/%s/packages" % quote(reponame), json={
+        resp = self.do_delete("api/repos/%s/packages" % quote(reponame), json={
             "PackageRefs": package_keys,
         })
         return self.repo_from_response(resp.json())

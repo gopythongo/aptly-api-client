@@ -51,7 +51,7 @@ class PublishAPISection(BaseAPIClient):
         return prefix
 
     def list(self) -> Sequence[PublishEndpoint]:
-        resp = self.do_get("/api/publish")
+        resp = self.do_get("api/publish")
         ret = []
         for rpe in resp.json():
             ret.append(self.endpoint_from_response(rpe))
@@ -84,9 +84,9 @@ class PublishAPISection(BaseAPIClient):
             if "name" not in source and "Name" not in source:
                 raise AptlyAPIException("Each source in publish() must contain the 'name' attribute")
 
-        url = "/api/publish"
+        url = "api/publish"
         if prefix is not None and prefix != "":
-            url = "/api/publish/%s" % quote(self.escape_prefix(prefix))
+            url = "api/publish/%s" % quote(self.escape_prefix(prefix))
 
         body = {
             "SourceKind": source_kind,
@@ -171,7 +171,7 @@ class PublishAPISection(BaseAPIClient):
                 sign_dict["PassphraseFile"] = sign_passphrase_file
         body["Signing"] = sign_dict
 
-        resp = self.do_put("/api/publish/%s/%s" %
+        resp = self.do_put("api/publish/%s/%s" %
                            (quote(self.escape_prefix(prefix)), quote(distribution),), json=body)
         return self.endpoint_from_response(resp.json())
 
@@ -179,5 +179,5 @@ class PublishAPISection(BaseAPIClient):
         params = {}
         if force_delete:
             params["force"] = "1"
-        self.do_delete("/api/publish/%s/%s" %
+        self.do_delete("api/publish/%s/%s" %
                        (quote(self.escape_prefix(prefix)), quote(distribution),), params=params)
