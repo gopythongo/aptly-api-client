@@ -5,11 +5,13 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import os
 import re
 from setuptools import setup, find_packages
 
 _package_root = "."
 _root_package = 'aptly_api'
+_HERE = os.path.abspath(os.path.dirname(__file__))
 
 with open("aptly_api/__init__.py", "rt", encoding="utf-8") as vf:
     lines = vf.readlines()
@@ -30,6 +32,11 @@ _requirements = [
     'iso8601',
     'pytz',
 ]
+
+try:
+    long_description = open(os.path.join(_HERE, 'README.rst')).read()
+except IOError:
+    long_description = None
 
 setup(
     name='aptly-api-client',
@@ -53,4 +60,5 @@ setup(
     maintainer="GoPythonGo.com",
     maintainer_email="info@gopythongo.com",
     description="A Python 3 client for the Aptly API",
+    long_description=long_description,
 )
