@@ -4,7 +4,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from datetime import datetime
-from typing import NamedTuple, Sequence, Optional, Dict, Union
+from typing import NamedTuple, Sequence, Optional, Dict, Union, cast
 from urllib.parse import quote
 
 import iso8601
@@ -24,7 +24,8 @@ class SnapshotAPISection(BaseAPIClient):
     @staticmethod
     def snapshot_from_response(api_response: Dict[str, Union[str, None]]) -> Snapshot:
         return Snapshot(
-            name=api_response["Name"],
+            # use a cast() here as `name` can never be None, but the `api_response` declaration can't handle that
+            name=cast(str, api_response["Name"]),
             description=api_response["Description"] if "Description" in api_response else None,
             created_at=iso8601.parse_date(
                 api_response["CreatedAt"], default_timezone=pytz.UTC
