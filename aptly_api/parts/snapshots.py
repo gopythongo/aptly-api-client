@@ -13,7 +13,11 @@ import pytz
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 from aptly_api.parts.packages import Package, PackageAPISection
 
-Snapshot = NamedTuple('Snapshot', [('name', str), ('description', str), ('created_at', datetime)])
+Snapshot = NamedTuple('Snapshot', [
+    ('name', str),
+    ('description', Optional[str]),
+    ('created_at', Optional[datetime])
+])
 
 
 class SnapshotAPISection(BaseAPIClient):

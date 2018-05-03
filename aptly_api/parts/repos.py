@@ -3,7 +3,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from typing import NamedTuple, Sequence, Dict, Union, cast
+from typing import NamedTuple, Sequence, Dict, Union, cast, Optional
 from urllib.parse import quote
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
@@ -11,9 +11,9 @@ from aptly_api.parts.packages import PackageAPISection, Package
 
 Repo = NamedTuple('Repo', [
     ('name', str),
-    ('comment', str),
-    ('default_distribution', str),
-    ('default_component', str)
+    ('comment', Optional[str]),
+    ('default_distribution', Optional[str]),
+    ('default_component', Optional[str])
 ])
 
 FileReport = NamedTuple('FileReport', [
