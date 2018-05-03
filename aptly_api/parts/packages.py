@@ -4,7 +4,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from typing import NamedTuple, Dict, Union
+from typing import NamedTuple, Dict, Union, Optional
 from urllib.parse import quote
 
 from aptly_api.base import BaseAPIClient
@@ -12,9 +12,9 @@ from aptly_api.base import BaseAPIClient
 
 Package = NamedTuple('Package', [
     ('key', str),
-    ('short_key', str),
-    ('files_hash', str),
-    ('fields', Dict[str, str]),
+    ('short_key', Optional[str]),
+    ('files_hash', Optional[str]),
+    ('fields', Optional[Dict[str, str]]),
 ])
 
 
