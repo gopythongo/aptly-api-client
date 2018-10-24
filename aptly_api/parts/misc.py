@@ -7,7 +7,7 @@ from aptly_api.base import AptlyAPIException, BaseAPIClient
 
 
 class MiscAPISection(BaseAPIClient):
-    def graph(self, ext: str, layout: str="horizontal") -> None:
+    def graph(self, ext: str, layout: str = "horizontal") -> None:
         raise NotImplementedError("The Graph API is not yet supported")
 
     def version(self) -> str:

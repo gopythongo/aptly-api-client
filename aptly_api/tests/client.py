@@ -44,7 +44,7 @@ class ClientTests(TestCase):
 
     def test_error_no_error(self) -> None:
         class MockResponse:
-            def __init__(self, status_code: int=200) -> None:
+            def __init__(self, status_code: int = 200) -> None:
                 self.status_code = status_code
 
         self.assertEqual(
