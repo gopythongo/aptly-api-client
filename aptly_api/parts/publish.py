@@ -57,7 +57,7 @@ class PublishAPISection(BaseAPIClient):
             ret.append(self.endpoint_from_response(rpe))
         return ret
 
-    def publish(self, *, source_kind: str="local",
+    def publish(self, *, source_kind: str = "local",
                 sources: Sequence[Dict[str, str]],
                 architectures: Sequence[str],
                 prefix: str = None, distribution: str = None, label: str = None,

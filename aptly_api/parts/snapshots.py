@@ -89,7 +89,7 @@ class SnapshotAPISection(BaseAPIClient):
         return self.snapshot_from_response(resp.json())
 
     def list_packages(self, snapshotname: str, query: str = None, with_deps: bool = False,
-                      detailed: bool=False) -> Sequence[Package]:
+                      detailed: bool = False) -> Sequence[Package]:
         params = {}
         if query is not None:
             params["q"] = query
