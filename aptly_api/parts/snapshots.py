@@ -32,7 +32,7 @@ class SnapshotAPISection(BaseAPIClient):
             ) if "CreatedAt" in api_response else None,
         )
 
-    def list(self, sort: str='name') -> Sequence[Snapshot]:
+    def list(self, sort: str = 'name') -> Sequence[Snapshot]:
         if sort not in ['name', 'time']:
             raise AptlyAPIException("Snapshot LIST only supports two sort modes: 'name' and 'time'. %s is not "
                                     "supported." % sort)
@@ -42,7 +42,7 @@ class SnapshotAPISection(BaseAPIClient):
             ret.append(self.snapshot_from_response(rsnap))
         return ret
 
-    def create_from_repo(self, reponame: str, snapshotname: str, description: str=None) -> Snapshot:
+    def create_from_repo(self, reponame: str, snapshotname: str, description: str = None) -> Snapshot:
         body = {
             "Name": snapshotname,
         }
@@ -52,8 +52,8 @@ class SnapshotAPISection(BaseAPIClient):
         resp = self.do_post("api/repos/%s/snapshots" % quote(reponame), json=body)
         return self.snapshot_from_response(resp.json())
 
-    def create_from_packages(self, snapshotname: str, description: str=None,
-                             source_snapshots: Optional[Sequence[str]]=None,
+    def create_from_packages(self, snapshotname: str, description: str = None,
+                             source_snapshots: Optional[Sequence[str]] = None,
                              package_refs: Optional[Sequence[str]] = None) -> Snapshot:
         body = {
             "Name": snapshotname,
@@ -70,7 +70,7 @@ class SnapshotAPISection(BaseAPIClient):
         resp = self.do_post("api/snapshots", json=body)
         return self.snapshot_from_response(resp.json())
 
-    def update(self, snapshotname: str, newname: str=None, newdescription: str=None) -> Snapshot:
+    def update(self, snapshotname: str, newname: str = None, newdescription: str = None) -> Snapshot:
         if newname is None and newdescription is None:
             raise AptlyAPIException("When updating a Snapshot you must at lease provide either a new name or a "
                                     "new description.")
@@ -88,7 +88,7 @@ class SnapshotAPISection(BaseAPIClient):
         resp = self.do_get("api/snapshots/%s" % quote(snapshotname))
         return self.snapshot_from_response(resp.json())
 
-    def list_packages(self, snapshotname: str, query: str=None, with_deps: bool=False,
+    def list_packages(self, snapshotname: str, query: str = None, with_deps: bool = False,
                       detailed: bool=False) -> Sequence[Package]:
         params = {}
         if query is not None:
@@ -104,7 +104,7 @@ class SnapshotAPISection(BaseAPIClient):
             ret.append(PackageAPISection.package_from_response(rpkg))
         return ret
 
-    def delete(self, snapshotname: str, force: bool=False) -> None:
+    def delete(self, snapshotname: str, force: bool = False) -> None:
         params = None
         if force:
             params = {

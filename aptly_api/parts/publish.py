@@ -60,11 +60,11 @@ class PublishAPISection(BaseAPIClient):
     def publish(self, *, source_kind: str="local",
                 sources: Sequence[Dict[str, str]],
                 architectures: Sequence[str],
-                prefix: str=None, distribution: str=None, label: str=None,
-                origin: str=None, force_overwrite: bool=False,
-                sign_skip: bool=False, sign_batch: bool=True, sign_gpgkey: str=None,
-                sign_keyring: str=None, sign_secret_keyring: str=None,
-                sign_passphrase: str=None, sign_passphrase_file: str=None) -> PublishEndpoint:
+                prefix: str = None, distribution: str = None, label: str = None,
+                origin: str = None, force_overwrite: bool = False,
+                sign_skip: bool = False, sign_batch: bool = True, sign_gpgkey: str = None,
+                sign_keyring: str = None, sign_secret_keyring: str = None,
+                sign_passphrase: str = None, sign_passphrase_file: str = None) -> PublishEndpoint:
         """
         Example:
 
@@ -125,10 +125,10 @@ class PublishAPISection(BaseAPIClient):
         return self.endpoint_from_response(resp.json())
 
     def update(self, *, prefix: str, distribution: str,
-               snapshots: Sequence[Dict[str, str]]=None, force_overwrite: bool=False,
-               sign_skip: bool=False, sign_batch: bool=True, sign_gpgkey: str=None,
-               sign_keyring: str=None, sign_secret_keyring: str=None,
-               sign_passphrase: str=None, sign_passphrase_file: str=None) -> PublishEndpoint:
+               snapshots: Sequence[Dict[str, str]] = None, force_overwrite: bool = False,
+               sign_skip: bool = False, sign_batch: bool = True, sign_gpgkey: str = None,
+               sign_keyring: str = None, sign_secret_keyring: str = None,
+               sign_passphrase: str = None, sign_passphrase_file: str = None) -> PublishEndpoint:
         """
         Example:
 
@@ -175,7 +175,7 @@ class PublishAPISection(BaseAPIClient):
                            (quote(self.escape_prefix(prefix)), quote(distribution),), json=body)
         return self.endpoint_from_response(resp.json())
 
-    def drop(self, *, prefix: str, distribution: str, force_delete: bool=False) -> None:
+    def drop(self, *, prefix: str, distribution: str, force_delete: bool = False) -> None:
         params = {}
         if force_delete:
             params["force"] = "1"

@@ -10,7 +10,7 @@ from aptly_api.base import BaseAPIClient, AptlyAPIException
 
 
 class FilesAPISection(BaseAPIClient):
-    def list(self, directory: str=None) -> Sequence[str]:
+    def list(self, directory: str = None) -> Sequence[str]:
         if directory is None:
             resp = self.do_get("api/files")
         else:
@@ -38,5 +38,5 @@ class FilesAPISection(BaseAPIClient):
 
         return resp.json()
 
-    def delete(self, path: str=None) -> None:
+    def delete(self, path: str = None) -> None:
         self.do_delete("api/files/%s" % path)
