@@ -75,8 +75,6 @@ class PublishAPISection(BaseAPIClient):
                 sign_gpgkey='A16BE921', sign_passphrase='*********'
             )
         """
-        if not sign_skip and not sign_gpgkey:
-            raise AptlyAPIException("Publish needs a gpgkey to sign with if sign_skip is False")
         if sign_passphrase is not None and sign_passphrase_file is not None:
             raise AptlyAPIException("Can't use sign_passphrase and sign_passphrase_file at the same time")
 
@@ -138,8 +136,6 @@ class PublishAPISection(BaseAPIClient):
                 sign_batch=True, sign_gpgkey='A16BE921', sign_passphrase='***********'
             )
         """
-        if not sign_skip and not sign_gpgkey:
-            raise AptlyAPIException("Update needs a gpgkey to sign with if sign_skip is False")
         if sign_passphrase is not None and sign_passphrase_file is not None:
             raise AptlyAPIException("Can't use sign_passphrase and sign_passphrase_file at the same time")
 
