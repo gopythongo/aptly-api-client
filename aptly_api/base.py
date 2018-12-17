@@ -21,12 +21,14 @@ class AptlyAPIException(Exception):
 
 class BaseAPIClient:
     def __init__(self, base_url: str, ssl_verify: Union[str, bool, None] = None,
-                 ssl_cert: Optional[Tuple[str, str]] = None, http_auth: Optional[AuthBase] = None) -> None:
+                 ssl_cert: Optional[Tuple[str, str]] = None, http_auth: Optional[AuthBase] = None,
+                 timeout: int = 5) -> None:
         self.base_url = base_url
         self.ssl_verify = ssl_verify
         self.ssl_cert = ssl_cert
         self.http_auth = http_auth
         self.exc_class = AptlyAPIException
+        self.timeout = timeout
 
     def _error_from_response(self, resp: requests.Response) -> str:
         if resp.status_code == 200:
@@ -54,7 +56,7 @@ class BaseAPIClient:
 
     def do_get(self, urlpath: str, params: Dict[str, str] = None) -> requests.Response:
         resp = requests.get(self._makeurl(urlpath), params=params, verify=self.ssl_verify,
-                            cert=self.ssl_cert, auth=self.http_auth)
+                            cert=self.ssl_cert, auth=self.http_auth, timeout=self.timeout)
 
         if resp.status_code < 200 or resp.status_code >= 300:
             raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
@@ -72,7 +74,8 @@ class BaseAPIClient:
                 ] = None,
                 json: MutableMapping[Any, Any] = None) -> requests.Response:
         resp = requests.post(self._makeurl(urlpath), data=data, params=params, files=files, json=json,
-                             verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
+                             verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
+                             timeout=self.timeout)
 
         if resp.status_code < 200 or resp.status_code >= 300:
             raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
@@ -89,7 +92,8 @@ class BaseAPIClient:
                ] = None,
                json: MutableMapping[Any, Any] = None) -> requests.Response:
         resp = requests.put(self._makeurl(urlpath), data=data, files=files, json=json,
-                            verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
+                            verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
+                            timeout=self.timeout)
 
         if resp.status_code < 200 or resp.status_code >= 300:
             raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
@@ -100,7 +104,8 @@ class BaseAPIClient:
                   data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]] = None,
                   json: Union[List[Dict[str, Any]], Dict[str, Any]] = None) -> requests.Response:
         resp = requests.delete(self._makeurl(urlpath), params=params, data=data, json=json,
-                               verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth)
+                               verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
+                               timeout=self.timeout)
 
         if resp.status_code < 200 or resp.status_code >= 300:
             raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
