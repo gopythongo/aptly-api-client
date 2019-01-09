@@ -51,11 +51,11 @@ class BaseAPIClient:
             ret = "%s (%s)" % (ret, content["meta"],)
         return ret
 
-    def _makeurl(self, path: str) -> str:
+    def _make_url(self, path: str) -> str:
         return urljoin(self.base_url, path)
 
     def do_get(self, urlpath: str, params: Dict[str, str] = None) -> requests.Response:
-        resp = requests.get(self._makeurl(urlpath), params=params, verify=self.ssl_verify,
+        resp = requests.get(self._make_url(urlpath), params=params, verify=self.ssl_verify,
                             cert=self.ssl_cert, auth=self.http_auth, timeout=self.timeout)
 
         if resp.status_code < 200 or resp.status_code >= 300:
@@ -73,7 +73,7 @@ class BaseAPIClient:
                     Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]]
                 ] = None,
                 json: MutableMapping[Any, Any] = None) -> requests.Response:
-        resp = requests.post(self._makeurl(urlpath), data=data, params=params, files=files, json=json,
+        resp = requests.post(self._make_url(urlpath), data=data, params=params, files=files, json=json,
                              verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
                              timeout=self.timeout)
 
@@ -91,7 +91,7 @@ class BaseAPIClient:
                    Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]]
                ] = None,
                json: MutableMapping[Any, Any] = None) -> requests.Response:
-        resp = requests.put(self._makeurl(urlpath), data=data, files=files, json=json,
+        resp = requests.put(self._make_url(urlpath), data=data, files=files, json=json,
                             verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
                             timeout=self.timeout)
 
@@ -103,7 +103,7 @@ class BaseAPIClient:
     def do_delete(self, urlpath: str, params: Dict[str, str] = None,
                   data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]] = None,
                   json: Union[List[Dict[str, Any]], Dict[str, Any]] = None) -> requests.Response:
-        resp = requests.delete(self._makeurl(urlpath), params=params, data=data, json=json,
+        resp = requests.delete(self._make_url(urlpath), params=params, data=data, json=json,
                                verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
                                timeout=self.timeout)
 
