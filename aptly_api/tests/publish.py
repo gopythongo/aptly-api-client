@@ -238,12 +238,63 @@ class PublishAPISectionTests(TestCase):
             )
         )
 
-    def test_no_key(self, *, rmock: requests_mock.Mocker) -> None:
-        with self.assertRaises(AptlyAPIException):
-            self.papi.publish(sources=[{'Name': 'aptly-repo'}], architectures=['amd64'],
-                              prefix='s3:myendpoint:test/a_1', distribution='test', sign_skip=False)
-        with self.assertRaises(AptlyAPIException):
-            self.papi.update(prefix='s3:myendpoint:test/a_1', distribution='test', sign_skip=False)
+    def test_publish_default_key(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.post("http://test/api/publish/s3%3Amyendpoint%3Atest_a__1",
+                   text='{"Architectures":["amd64"],"Distribution":"test","Label":"test",'
+                        '"Origin":"origin","Prefix":"test/a_1","SkipContents":false,'
+                        '"SourceKind":"local","Sources":[{"Component":"main","Name":"aptly-repo"}],'
+                        '"Storage":"s3:myendpoint"}')
+        self.assertEqual(
+            self.papi.publish(
+                sources=[{'Name': 'aptly-repo'}], architectures=['amd64'],
+                prefix='s3:myendpoint:test/a_1', distribution='test', label='test', origin='origin',
+                sign_batch=True, sign_passphrase='*********',
+                force_overwrite=True, sign_keyring="/etc/gpg-managed-keyring/pubring.pub",
+                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg"
+            ),
+            PublishEndpoint(
+                storage='s3:myendpoint',
+                prefix='test/a_1',
+                distribution='test',
+                source_kind='local',
+                sources=[{'Component': 'main', 'Name': 'aptly-repo'}],
+                architectures=['amd64'],
+                label='test',
+                origin='origin'
+            )
+        )
+
+    def test_update_snapshot_default_key(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.put("http://test/api/publish/s3%3Aaptly-repo%3Atest_xyz__1/test",
+                  text='{"Architectures":["amd64"],"Distribution":"test","Label":"",'
+                       '"Origin":"","Prefix":"test/xyz_1","SkipContents":false,'
+                       '"SourceKind":"snapshot","Sources":[{"Component":"main","Name":"aptly-repo-1"}],'
+                       '"Storage":"s3:aptly-repo"}')
+        self.assertEqual(
+            self.papi.update(
+                prefix="s3:aptly-repo:test/xyz_1",
+                distribution="test",
+                snapshots=[{"Name": "aptly-repo-1"}],
+                force_overwrite=True,
+                sign_batch=True,
+                sign_passphrase="123456",
+                sign_keyring="/etc/gpg-managed-keyring/pubring.pub",
+                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg"
+            ),
+            PublishEndpoint(
+                storage='s3:aptly-repo',
+                prefix='test/xyz_1',
+                distribution='test',
+                source_kind='snapshot',
+                sources=[{
+                    'Name': 'aptly-repo-1',
+                    'Component': 'main',
+                }],
+                architectures=['amd64'],
+                label='',
+                origin=''
+            )
+        )
 
     def test_double_passphrase(self, *, rmock: requests_mock.Mocker) -> None:
         with self.assertRaises(AptlyAPIException):
