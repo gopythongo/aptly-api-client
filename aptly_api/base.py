@@ -22,7 +22,7 @@ class AptlyAPIException(Exception):
 class BaseAPIClient:
     def __init__(self, base_url: str, ssl_verify: Union[str, bool, None] = None,
                  ssl_cert: Optional[Tuple[str, str]] = None, http_auth: Optional[AuthBase] = None,
-                 timeout: int = 15) -> None:
+                 timeout: int = 60) -> None:
         self.base_url = base_url
         self.ssl_verify = ssl_verify
         self.ssl_cert = ssl_cert
