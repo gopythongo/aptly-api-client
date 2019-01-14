@@ -48,10 +48,17 @@ certificates, HTTP Basic authentication etc.
     aptly.repos.add_uploaded_file("myrepo", "test_folder")
 
 
+Contributors
+============
+
+* @findmyname666 <findmyname666@users.noreply.github.com>
+* Filip Křesťan <fkrestan@users.noreply.github.com>
+
+
 License
 =======
 
-Copyright (c) 2016-2017, Jonas Maurus.
+Copyright (c) 2016-2019, Jonas Maurus and Contributors.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
