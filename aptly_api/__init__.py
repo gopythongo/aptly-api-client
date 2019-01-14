@@ -12,7 +12,7 @@ from aptly_api.parts.publish import PublishEndpoint
 from aptly_api.parts.repos import Repo, FileReport
 from aptly_api.parts.snapshots import Snapshot
 
-version = "0.1.6"
+version = "0.2.0"
 
 
 __all__ = ['Client', 'AptlyAPIException', 'version', 'Package', 'PublishEndpoint', 'Repo', 'FileReport',
