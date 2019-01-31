@@ -1,7 +1,7 @@
 requests-mock==1.5.2
 coverage==4.5.2
 coveralls==1.5.1
-flake8==3.7.2
+flake8==3.7.3
 pep257==0.7.0
 doc8==0.8.0
 Pygments==2.3.1
