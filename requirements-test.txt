@@ -1,6 +1,6 @@
 requests-mock==1.5.2
 coverage==4.5.3
-coveralls==1.6.0
+coveralls==1.7.0
 flake8==3.7.7
 pep257==0.7.0
 doc8==0.8.0
