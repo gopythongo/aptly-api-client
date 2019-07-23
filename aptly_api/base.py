@@ -7,7 +7,7 @@
 from typing import Sequence, Dict, Tuple, Optional, Union, List, Any, MutableMapping
 from urllib.parse import urljoin
 
-from typing.io import IO
+from typing.io import IO, BinaryIO
 
 import requests
 from requests.auth import AuthBase
@@ -54,7 +54,7 @@ class BaseAPIClient:
     def _make_url(self, path: str) -> str:
         return urljoin(self.base_url, path)
 
-    def do_get(self, urlpath: str, params: Dict[str, str] = None) -> requests.Response:
+    def do_get(self, urlpath: str, params: Optional[Dict[str, str]] = None) -> requests.Response:
         resp = requests.get(self._make_url(urlpath), params=params, verify=self.ssl_verify,
                             cert=self.ssl_cert, auth=self.http_auth, timeout=self.timeout)
 
@@ -63,16 +63,17 @@ class BaseAPIClient:
 
         return resp
 
-    def do_post(self, urlpath: str, data: Union[bytes, MutableMapping[str, str], IO[Any]] = None,
-                params: Dict[str, str] = None,
+    def do_post(self, urlpath: str, data: Union[bytes, MutableMapping[str, str], IO[Any], None] = None,
+                params: Optional[Dict[str, str]] = None,
                 files: Union[
                     Dict[str, IO],
-                    Dict[str, Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]],
+                    Dict[str, Tuple[str, Union[IO, BinaryIO], Optional[str], Optional[Dict[str, str]]]],
                     Dict[str, Tuple[str, str]],
-                    Sequence[Tuple[str, IO]],
-                    Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]]
+                    Sequence[Tuple[str, Union[IO, BinaryIO]]],
+                    Sequence[Tuple[str, Union[IO, BinaryIO], Optional[str], Optional[Dict[str, str]]]],
+                    None
                 ] = None,
-                json: MutableMapping[Any, Any] = None) -> requests.Response:
+                json: Optional[MutableMapping[Any, Any]] = None) -> requests.Response:
         resp = requests.post(self._make_url(urlpath), data=data, params=params, files=files, json=json,
                              verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
                              timeout=self.timeout)
@@ -88,9 +89,10 @@ class BaseAPIClient:
                    Dict[str, Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]],
                    Dict[str, Tuple[str, str]],
                    Sequence[Tuple[str, IO]],
-                   Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]]
+                   Sequence[Tuple[str, IO, Optional[str], Optional[Dict[str, str]]]],
+                   None
                ] = None,
-               json: MutableMapping[Any, Any] = None) -> requests.Response:
+               json: Optional[MutableMapping[Any, Any]] = None) -> requests.Response:
         resp = requests.put(self._make_url(urlpath), data=data, files=files, json=json,
                             verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
                             timeout=self.timeout)
@@ -100,9 +102,9 @@ class BaseAPIClient:
 
         return resp
 
-    def do_delete(self, urlpath: str, params: Dict[str, str] = None,
-                  data: Union[str, Dict[str, str], Sequence[Tuple[str, str]]] = None,
-                  json: Union[List[Dict[str, Any]], Dict[str, Any]] = None) -> requests.Response:
+    def do_delete(self, urlpath: str, params: Optional[Dict[str, str]] = None,
+                  data: Union[str, Dict[str, str], Sequence[Tuple[str, str]], None] = None,
+                  json: Union[List[Dict[str, Any]], Dict[str, Any], None] = None) -> requests.Response:
         resp = requests.delete(self._make_url(urlpath), params=params, data=data, json=json,
                                verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
                                timeout=self.timeout)

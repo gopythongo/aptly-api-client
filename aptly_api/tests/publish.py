@@ -25,7 +25,7 @@ class PublishAPISectionTests(TestCase):
                        '"Origin":"","Prefix":"nightly/stretch","SkipContents":false,'
                        '"SourceKind":"local","Sources":[{"Component":"main","Name":"maurusnet"}],'
                        '"Storage":"s3:maurusnet"}]')
-        self.assertListEqual(
+        self.assertSequenceEqual(
             self.papi.list(),
             [
                 PublishEndpoint(

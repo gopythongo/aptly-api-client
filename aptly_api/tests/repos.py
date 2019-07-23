@@ -48,7 +48,7 @@ class ReposAPISectionTests(TestCase):
     def test_search(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.get("http://test/api/repos/aptly-repo/packages",
                   text='["Pamd64 authserver 0.1.14~dev0-1 1cc572a93625a9c9"]')
-        self.assertListEqual(
+        self.assertSequenceEqual(
             self.rapi.search_packages("aptly-repo"),
             [
                 Package(
@@ -89,7 +89,7 @@ class ReposAPISectionTests(TestCase):
                       "Version":"0.1.14~dev0-1"
                  }]"""
         )
-        self.assertListEqual(
+        self.assertSequenceEqual(
             self.rapi.search_packages("aptly-repo", detailed=True, with_deps=True, query="Name (authserver)"),
             [
                 Package(
@@ -143,7 +143,7 @@ class ReposAPISectionTests(TestCase):
                   text='[{"Name":"maurusnet","Comment":"","DefaultDistribution":"",'
                        '"DefaultComponent":"main"},{"Name":"aptly-repo","Comment":"comment",'
                        '"DefaultDistribution":"stretch","DefaultComponent":"main"}]')
-        self.assertListEqual(
+        self.assertSequenceEqual(
             self.rapi.list(),
             [
                 Repo(name='maurusnet', comment='', default_distribution='', default_component='main'),
