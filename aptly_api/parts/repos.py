@@ -39,8 +39,8 @@ class ReposAPISection(BaseAPIClient):
             report=cast(Dict[str, Sequence[str]], api_response["Report"]),
         )
 
-    def create(self, reponame: str, comment: str = None, default_distribution: str = None,
-               default_component: str = None) -> Repo:
+    def create(self, reponame: str, comment: Optional[str] = None, default_distribution: Optional[str] = None,
+               default_component: Optional[str] = None) -> Repo:
         data = {
             "Name": reponame,
         }
@@ -60,7 +60,7 @@ class ReposAPISection(BaseAPIClient):
         resp = self.do_get("api/repos/%s" % quote(reponame))
         return self.repo_from_response(resp.json())
 
-    def search_packages(self, reponame: str, query: str = None, with_deps: bool = False,
+    def search_packages(self, reponame: str, query: Optional[str] = None, with_deps: bool = False,
                         detailed: bool = False) -> Sequence[Package]:
         if query is None and with_deps:
             raise AptlyAPIException("search_packages can't include dependencies (with_deps==True) without"
@@ -81,8 +81,8 @@ class ReposAPISection(BaseAPIClient):
             ret.append(PackageAPISection.package_from_response(rpkg))
         return ret
 
-    def edit(self, reponame: str, comment: str = None, default_distribution: str = None,
-             default_component: str = None) -> Repo:
+    def edit(self, reponame: str, comment: Optional[str] = None, default_distribution: Optional[str] = None,
+             default_component: Optional[str] = None) -> Repo:
         if comment is None and default_component is None and default_distribution is None:
             raise AptlyAPIException("edit requires at least one of 'comment', 'default_distribution' or "
                                     "'default_component'.")
@@ -111,8 +111,8 @@ class ReposAPISection(BaseAPIClient):
     def delete(self, reponame: str, force: bool = False) -> None:
         self.do_delete("api/repos/%s" % quote(reponame), params={"force": "1" if force else "0"})
 
-    def add_uploaded_file(self, reponame: str, dir: str, filename: str = None, remove_processed_files: bool = True,
-                          force_replace: bool = False) -> FileReport:
+    def add_uploaded_file(self, reponame: str, dir: str, filename: Optional[str] = None,
+                          remove_processed_files: bool = True, force_replace: bool = False) -> FileReport:
         params = {
             "noRemove": "0" if remove_processed_files else "1",
         }

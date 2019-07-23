@@ -30,7 +30,7 @@ class SnapshotAPISectionTests(TestCase):
                        '{"Name":"stretch-updates-1","CreatedAt":"2017-06-03T21:36:22.431767659Z",'
                        '"Description":"Snapshot from mirror [stretch-updates]: '
                        'http://ftp-stud.hs-esslingen.de/debian/ stretch-updates"}]')
-        self.assertListEqual(
+        self.assertSequenceEqual(
             self.sapi.list(),
             [
                 Snapshot(
@@ -104,38 +104,43 @@ class SnapshotAPISectionTests(TestCase):
                        '"Section":"oldlibs",'
                        '"ShortKey":"Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1",'
                        '"Size":"468824","Source":"postgis","Version":"2.3.2+dfsg-1~exp2.pgdg90+1"}]')
+        parsed = self.sapi.list_packages("aptly-repo-1", query="Name (% postgresql-9.6.-postgis-sc*)", detailed=True,
+                                         with_deps=True)[0]
+        expected = Package(
+            key='Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1 5f70af798690300d',
+            short_key='Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1',
+            files_hash='5f70af798690300d',
+            fields={
+                'Maintainer': 'Debian GIS Project <pkg-grass-devel@lists.alioth.debian.org>',
+                'Size': '468824',
+                'MD5sum': '56de7bac497e4ac34017f4d11e75fffb',
+                'ShortKey': 'Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1',
+                'FilesHash': '5f70af798690300d',
+                'Filename': 'postgresql-9.6-postgis-scripts_2.3.2+dfsg-1~exp2.pgdg90+1_all.deb',
+                'Section': 'oldlibs',
+                'Homepage': 'http://postgis.net/',
+                'Description': ' transitional dummy package\n This is a transitional dummy package. '
+                               'It can safely be removed.\n',
+                'Architecture': 'all',
+                'Priority': 'extra',
+                'Source': 'postgis',
+                'SHA1': '61bb9250e7a35be9b78808944e8cfbae1e70f67d',
+                'Installed-Size': '491',
+                'Version': '2.3.2+dfsg-1~exp2.pgdg90+1',
+                'Depends': 'postgresql-9.6-postgis-2.3-scripts',
+                'Key': 'Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1 5f70af798690300d',
+                'SHA256': '01c0c4645e9100f7ddb6d05a9d36ad3866ac8d2e412b7c04163a9e65397ce05e',
+                'Package': 'postgresql-9.6-postgis-scripts'
+            }
+        )
+
+        # mypy should detect this as ensuring that parsed.fields is not None, but it doesn't
+        self.assertIsNotNone(parsed.fields)
+        self.assertIsNotNone(expected.fields)
+
         self.assertDictEqual(
-            self.sapi.list_packages("aptly-repo-1", query="Name (% postgresql-9.6.-postgis-sc*)", detailed=True,
-                                    with_deps=True)[0].fields,
-            [
-                Package(
-                    key='Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1 5f70af798690300d',
-                    short_key='Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1',
-                    files_hash='5f70af798690300d',
-                    fields={
-                        'Maintainer': 'Debian GIS Project <pkg-grass-devel@lists.alioth.debian.org>',
-                        'Size': '468824',
-                        'MD5sum': '56de7bac497e4ac34017f4d11e75fffb',
-                        'ShortKey': 'Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1',
-                        'FilesHash': '5f70af798690300d',
-                        'Filename': 'postgresql-9.6-postgis-scripts_2.3.2+dfsg-1~exp2.pgdg90+1_all.deb',
-                        'Section': 'oldlibs',
-                        'Homepage': 'http://postgis.net/',
-                        'Description': ' transitional dummy package\n This is a transitional dummy package. '
-                                       'It can safely be removed.\n',
-                        'Architecture': 'all',
-                        'Priority': 'extra',
-                        'Source': 'postgis',
-                        'SHA1': '61bb9250e7a35be9b78808944e8cfbae1e70f67d',
-                        'Installed-Size': '491',
-                        'Version': '2.3.2+dfsg-1~exp2.pgdg90+1',
-                        'Depends': 'postgresql-9.6-postgis-2.3-scripts',
-                        'Key': 'Pall postgresql-9.6-postgis-scripts 2.3.2+dfsg-1~exp2.pgdg90+1 5f70af798690300d',
-                        'SHA256': '01c0c4645e9100f7ddb6d05a9d36ad3866ac8d2e412b7c04163a9e65397ce05e',
-                        'Package': 'postgresql-9.6-postgis-scripts'
-                    }
-                )
-            ][0].fields
+            parsed.fields if parsed.fields else {},  # make sure that mypy doesn't error on this being potentially None
+            expected.fields if expected.fields else {},  # this can't happen unless Package.__init__ is fubared
         )
 
     def test_show(self, *, rmock: requests_mock.Mocker) -> None:
@@ -174,7 +179,7 @@ class SnapshotAPISectionTests(TestCase):
         rmock.get("http://test/api/snapshots/aptly-repo-1/diff/aptly-repo-2",
                   text='[{"Left":null,"Right":"Pamd64 authserver 0.1.14~dev0-1 1cc572a93625a9c9"},'
                        '{"Left":"Pamd64 radicale 1.1.1 fbc974fa526f14e9","Right":null}]')
-        self.assertListEqual(
+        self.assertSequenceEqual(
             self.sapi.diff("aptly-repo-1", "aptly-repo-2"),
             [
                 {'Left': None, 'Right': 'Pamd64 authserver 0.1.14~dev0-1 1cc572a93625a9c9'},

@@ -3,7 +3,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from typing import NamedTuple, Sequence, Dict, Union, List, cast
+from typing import NamedTuple, Sequence, Dict, Union, List, cast, Optional
 from urllib.parse import quote
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
@@ -60,11 +60,11 @@ class PublishAPISection(BaseAPIClient):
     def publish(self, *, source_kind: str = "local",
                 sources: Sequence[Dict[str, str]],
                 architectures: Sequence[str],
-                prefix: str = None, distribution: str = None, label: str = None,
-                origin: str = None, force_overwrite: bool = False,
-                sign_skip: bool = False, sign_batch: bool = True, sign_gpgkey: str = None,
-                sign_keyring: str = None, sign_secret_keyring: str = None,
-                sign_passphrase: str = None, sign_passphrase_file: str = None) -> PublishEndpoint:
+                prefix: Optional[str] = None, distribution: Optional[str] = None, label: Optional[str] = None,
+                origin: Optional[str] = None, force_overwrite: bool = False,
+                sign_skip: bool = False, sign_batch: bool = True, sign_gpgkey: Optional[str] = None,
+                sign_keyring: Optional[str] = None, sign_secret_keyring: Optional[str] = None,
+                sign_passphrase: Optional[str] = None, sign_passphrase_file: Optional[str] = None) -> PublishEndpoint:
         """
         Example:
 
@@ -123,10 +123,10 @@ class PublishAPISection(BaseAPIClient):
         return self.endpoint_from_response(resp.json())
 
     def update(self, *, prefix: str, distribution: str,
-               snapshots: Sequence[Dict[str, str]] = None, force_overwrite: bool = False,
-               sign_skip: bool = False, sign_batch: bool = True, sign_gpgkey: str = None,
-               sign_keyring: str = None, sign_secret_keyring: str = None,
-               sign_passphrase: str = None, sign_passphrase_file: str = None) -> PublishEndpoint:
+               snapshots: Optional[Sequence[Dict[str, str]]] = None, force_overwrite: bool = False,
+               sign_skip: bool = False, sign_batch: bool = True, sign_gpgkey: Optional[str] = None,
+               sign_keyring: Optional[str] = None, sign_secret_keyring: Optional[str] = None,
+               sign_passphrase: Optional[str] = None, sign_passphrase_file: Optional[str] = None) -> PublishEndpoint:
         """
         Example:
 

@@ -5,12 +5,13 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-from aptly_api.client import Client
-from aptly_api.base import AptlyAPIException
-from aptly_api.parts.packages import Package
-from aptly_api.parts.publish import PublishEndpoint
-from aptly_api.parts.repos import Repo, FileReport
-from aptly_api.parts.snapshots import Snapshot
+# explicit exports for mypy
+from aptly_api.client import Client as Client
+from aptly_api.base import AptlyAPIException as AptlyAPIException
+from aptly_api.parts.packages import Package as Package
+from aptly_api.parts.publish import PublishEndpoint as PublishEndpoint
+from aptly_api.parts.repos import Repo as Repo, FileReport as FileReport
+from aptly_api.parts.snapshots import Snapshot as Snapshot
 
 version = "0.2.0"
 
