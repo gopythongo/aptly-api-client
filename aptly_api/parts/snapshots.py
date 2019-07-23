@@ -4,7 +4,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from datetime import datetime
-from typing import NamedTuple, Sequence, Optional, Dict, Union, cast
+from typing import NamedTuple, Sequence, Optional, Dict, Union, cast, List
 from urllib.parse import quote
 
 import iso8601
@@ -42,7 +42,7 @@ class SnapshotAPISection(BaseAPIClient):
             ret.append(self.snapshot_from_response(rsnap))
         return ret
 
-    def create_from_repo(self, reponame: str, snapshotname: str, description: str = None) -> Snapshot:
+    def create_from_repo(self, reponame: str, snapshotname: str, description: Optional[str] = None) -> Snapshot:
         body = {
             "Name": snapshotname,
         }
@@ -52,7 +52,7 @@ class SnapshotAPISection(BaseAPIClient):
         resp = self.do_post("api/repos/%s/snapshots" % quote(reponame), json=body)
         return self.snapshot_from_response(resp.json())
 
-    def create_from_packages(self, snapshotname: str, description: str = None,
+    def create_from_packages(self, snapshotname: str, description: Optional[str] = None,
                              source_snapshots: Optional[Sequence[str]] = None,
                              package_refs: Optional[Sequence[str]] = None) -> Snapshot:
         body = {
@@ -70,7 +70,8 @@ class SnapshotAPISection(BaseAPIClient):
         resp = self.do_post("api/snapshots", json=body)
         return self.snapshot_from_response(resp.json())
 
-    def update(self, snapshotname: str, newname: str = None, newdescription: str = None) -> Snapshot:
+    def update(self, snapshotname: str, newname: Optional[str] = None,
+               newdescription: Optional[str] = None) -> Snapshot:
         if newname is None and newdescription is None:
             raise AptlyAPIException("When updating a Snapshot you must at lease provide either a new name or a "
                                     "new description.")
@@ -88,7 +89,7 @@ class SnapshotAPISection(BaseAPIClient):
         resp = self.do_get("api/snapshots/%s" % quote(snapshotname))
         return self.snapshot_from_response(resp.json())
 
-    def list_packages(self, snapshotname: str, query: str = None, with_deps: bool = False,
+    def list_packages(self, snapshotname: str, query: Optional[str] = None, with_deps: bool = False,
                       detailed: bool = False) -> Sequence[Package]:
         params = {}
         if query is not None:
@@ -115,4 +116,4 @@ class SnapshotAPISection(BaseAPIClient):
 
     def diff(self, snapshot1: str, snapshot2: str) -> Sequence[Dict[str, str]]:
         resp = self.do_get("api/snapshots/%s/diff/%s" % (quote(snapshot1), quote(snapshot2),))
-        return resp.json()
+        return cast(List[Dict[str, str]], resp.json())
