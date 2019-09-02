@@ -126,7 +126,8 @@ class PublishAPISection(BaseAPIClient):
                snapshots: Optional[Sequence[Dict[str, str]]] = None, force_overwrite: bool = False,
                sign_skip: bool = False, sign_batch: bool = True, sign_gpgkey: Optional[str] = None,
                sign_keyring: Optional[str] = None, sign_secret_keyring: Optional[str] = None,
-               sign_passphrase: Optional[str] = None, sign_passphrase_file: Optional[str] = None) -> PublishEndpoint:
+               sign_passphrase: Optional[str] = None, sign_passphrase_file: Optional[str] = None,
+               skip_cleanup: Optional[bool] = False) -> PublishEndpoint:
         """
         Example:
 
@@ -149,6 +150,8 @@ class PublishAPISection(BaseAPIClient):
 
         if force_overwrite:
             body["ForceOverwrite"] = True
+        if skip_cleanup:
+            body["SkipCleanup"] = True
 
         sign_dict = {}  # type: Dict[str, Union[bool,str]]
         if sign_skip:
