@@ -4,5 +4,5 @@ coveralls==1.11.1
 flake8==3.7.9
 pep257==0.7.0
 doc8==0.8.0
-Pygments==2.6.0
+Pygments==2.6.1
 mypy==0.761
