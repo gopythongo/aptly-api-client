@@ -36,7 +36,7 @@ class SnapshotAPISection(BaseAPIClient):
         if sort not in ['name', 'time']:
             raise AptlyAPIException("Snapshot LIST only supports two sort modes: 'name' and 'time'. %s is not "
                                     "supported." % sort)
-        resp = self.do_get("api/snapshots")
+        resp = self.do_get("api/snapshots", params={"sort": sort})
         ret = []
         for rsnap in resp.json():
             ret.append(self.snapshot_from_response(rsnap))
