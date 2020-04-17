@@ -279,7 +279,8 @@ class PublishAPISectionTests(TestCase):
                 sign_batch=True,
                 sign_passphrase="123456",
                 sign_keyring="/etc/gpg-managed-keyring/pubring.pub",
-                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg"
+                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg",
+                skip_cleanup=True
             ),
             PublishEndpoint(
                 storage='s3:aptly-repo',
