@@ -3,6 +3,6 @@ coverage==5.1
 coveralls==2.0.0
 flake8==3.8.2
 pep257==0.7.0
-doc8==0.8.0
+doc8==0.8.1
 Pygments==2.6.1
 mypy==0.770
