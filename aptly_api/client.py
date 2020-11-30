@@ -12,14 +12,14 @@ from aptly_api.parts.snapshots import SnapshotAPISection
 
 
 class Client:
-    def __init__(self, aptly_server_url: str) -> None:
+    def __init__(self, aptly_server_url: str, timeout: int = 60) -> None:
         self.aptly_server_url = aptly_server_url
-        self.files = FilesAPISection(self.aptly_server_url)
-        self.misc = MiscAPISection(self.aptly_server_url)
-        self.packages = PackageAPISection(self.aptly_server_url)
-        self.publish = PublishAPISection(self.aptly_server_url)
-        self.repos = ReposAPISection(self.aptly_server_url)
-        self.snapshots = SnapshotAPISection(self.aptly_server_url)
+        self.files = FilesAPISection(self.aptly_server_url, timeout=timeout)
+        self.misc = MiscAPISection(self.aptly_server_url, timeout=timeout)
+        self.packages = PackageAPISection(self.aptly_server_url, timeout=timeout)
+        self.publish = PublishAPISection(self.aptly_server_url, timeout=timeout)
+        self.repos = ReposAPISection(self.aptly_server_url, timeout=timeout)
+        self.snapshots = SnapshotAPISection(self.aptly_server_url, timeout=timeout)
 
     def __repr__(self) -> str:
         return "Client (Aptly API Client) <%s>" % self.aptly_server_url

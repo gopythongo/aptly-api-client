@@ -17,8 +17,8 @@ with open("aptly_api/__init__.py", "rt", encoding="utf-8") as vf:
     lines = vf.readlines()
 
 _version = "0.0.0+local"
-for l in lines:
-    m = re.match("version = \"(.*?)\"", l)
+for line in lines:
+    m = re.match("version = \"(.*?)\"", line)
     if m:
         _version = m.group(1)
 
