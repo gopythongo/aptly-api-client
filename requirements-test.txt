@@ -1,8 +1,8 @@
-requests-mock==1.7.0
-coverage==5.1
-coveralls==2.0.0
-flake8==3.7.9
+requests-mock==1.8.0
+coverage==5.3
+coveralls==2.2.0
+flake8==3.8.4
 pep257==0.7.0
-doc8==0.8.0
-Pygments==2.6.1
-mypy==0.770
+doc8==0.8.1
+Pygments==2.7.2
+mypy==0.790
