@@ -21,10 +21,11 @@ class PublishAPISectionTests(TestCase):
 
     def test_list(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.get("http://test/api/publish",
-                  text='[{"Architectures":["amd64"],"Distribution":"mn-nightly","Label":"",'
-                       '"Origin":"","Prefix":"nightly/stretch","SkipContents":false,'
-                       '"SourceKind":"local","Sources":[{"Component":"main","Name":"maurusnet"}],'
-                       '"Storage":"s3:maurusnet"}]')
+                  text='[{"AcquireByHash":false,"Architectures":["amd64"],'
+                       '"ButAutomaticUpgrades":"","Distribution":"saltfix",'
+                       '"Label":"","NotAutomatic":"","Origin":"","Prefix":"saltmirror/buster",'
+                       '"SkipContents":false,"SourceKind":"local","Sources":[{"Component":"main",'
+                       '"Name":"saltmirror"}],"Storage":"s3:maurusnet"}]')
         self.assertSequenceEqual(
             self.papi.list(),
             [
@@ -46,7 +47,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_update(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.put("http://test/api/publish/s3%3Aaptly-repo%3Atest_xyz__1/test",
-                  text='{"Architectures":["amd64"],"Distribution":"test","Label":"",'
+                  text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"",'
                        '"Origin":"","Prefix":"test/xyz_1","SkipContents":false,'
                        '"SourceKind":"local","Sources":[{"Component":"main","Name":"aptly-repo"}],'
                        '"Storage":"s3:aptly-repo"}')
@@ -75,7 +76,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_update_passphrase_file(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.put("http://test/api/publish/s3%3Aaptly-repo%3Atest_xyz__1/test",
-                  text='{"Architectures":["amd64"],"Distribution":"test","Label":"",'
+                  text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"",'
                        '"Origin":"","Prefix":"test/xyz_1","SkipContents":false,'
                        '"SourceKind":"local","Sources":[{"Component":"main","Name":"aptly-repo"}],'
                        '"Storage":"s3:aptly-repo"}')
@@ -104,7 +105,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_update_no_sign(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.put("http://test/api/publish/s3%3Aaptly-repo%3Atest_xyz__1/test",
-                  text='{"Architectures":["amd64"],"Distribution":"test","Label":"",'
+                  text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"",'
                        '"Origin":"","Prefix":"test/xyz_1","SkipContents":false,'
                        '"SourceKind":"local","Sources":[{"Component":"main","Name":"aptly-repo"}],'
                        '"Storage":"s3:aptly-repo"}')
@@ -131,7 +132,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_update_snapshots(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.put("http://test/api/publish/s3%3Aaptly-repo%3Atest_xyz__1/test",
-                  text='{"Architectures":["amd64"],"Distribution":"test","Label":"",'
+                  text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"",'
                        '"Origin":"","Prefix":"test/xyz_1","SkipContents":false,'
                        '"SourceKind":"snapshot","Sources":[{"Component":"main","Name":"aptly-repo-1"}],'
                        '"Storage":"s3:aptly-repo"}')
@@ -164,7 +165,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_publish(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/publish/s3%3Amyendpoint%3Atest_a__1",
-                   text='{"Architectures":["amd64"],"Distribution":"test","Label":"test",'
+                   text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"test",'
                         '"Origin":"origin","Prefix":"test/a_1","SkipContents":false,'
                         '"SourceKind":"local","Sources":[{"Component":"main","Name":"aptly-repo"}],'
                         '"Storage":"s3:myendpoint"}')
@@ -190,7 +191,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_publish_passphrase_file(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/publish/s3%3Amyendpoint%3Atest_a__1",
-                   text='{"Architectures":["amd64"],"Distribution":"test","Label":"test",'
+                   text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"test",'
                         '"Origin":"origin","Prefix":"test/a_1","SkipContents":false,'
                         '"SourceKind":"local","Sources":[{"Component":"main","Name":"aptly-repo"}],'
                         '"Storage":"s3:myendpoint"}')
@@ -216,7 +217,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_publish_no_sign(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/publish/s3%3Amyendpoint%3Atest_a__1",
-                   text='{"Architectures":["amd64"],"Distribution":"test","Label":"test",'
+                   text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"test",'
                         '"Origin":"origin","Prefix":"test/a_1","SkipContents":false,'
                         '"SourceKind":"local","Sources":[{"Component":"main","Name":"aptly-repo"}],'
                         '"Storage":"s3:myendpoint"}')
@@ -240,7 +241,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_publish_default_key(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/publish/s3%3Amyendpoint%3Atest_a__1",
-                   text='{"Architectures":["amd64"],"Distribution":"test","Label":"test",'
+                   text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"test",'
                         '"Origin":"origin","Prefix":"test/a_1","SkipContents":false,'
                         '"SourceKind":"local","Sources":[{"Component":"main","Name":"aptly-repo"}],'
                         '"Storage":"s3:myendpoint"}')
@@ -266,7 +267,7 @@ class PublishAPISectionTests(TestCase):
 
     def test_update_snapshot_default_key(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.put("http://test/api/publish/s3%3Aaptly-repo%3Atest_xyz__1/test",
-                  text='{"Architectures":["amd64"],"Distribution":"test","Label":"",'
+                  text='{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"test","Label":"",'
                        '"Origin":"","Prefix":"test/xyz_1","SkipContents":false,'
                        '"SourceKind":"snapshot","Sources":[{"Component":"main","Name":"aptly-repo-1"}],'
                        '"Storage":"s3:aptly-repo"}')
