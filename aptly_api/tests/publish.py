@@ -179,7 +179,8 @@ class PublishAPISectionTests(TestCase):
                 prefix='s3:myendpoint:test/a_1', distribution='test', label='test', origin='origin',
                 sign_batch=True, sign_gpgkey='A16BE921', sign_passphrase='*********',
                 force_overwrite=True, sign_keyring="/etc/gpg-managed-keyring/pubring.pub",
-                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg"
+                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg",
+                acquire_by_hash=False
             ),
             PublishEndpoint(
                 storage='s3:myendpoint',
@@ -206,7 +207,8 @@ class PublishAPISectionTests(TestCase):
                 prefix='s3:myendpoint:test/a_1', distribution='test', label='test', origin='origin',
                 sign_batch=True, sign_gpgkey='A16BE921', sign_passphrase_file='/root/passphrase.txt',
                 force_overwrite=True, sign_keyring="/etc/gpg-managed-keyring/pubring.pub",
-                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg"
+                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg",
+                acquire_by_hash=False
             ),
             PublishEndpoint(
                 storage='s3:myendpoint',
@@ -231,7 +233,8 @@ class PublishAPISectionTests(TestCase):
             self.papi.publish(
                 sources=[{'Name': 'aptly-repo'}], architectures=['amd64'],
                 prefix='s3:myendpoint:test/a_1', distribution='test', label='test', origin='origin',
-                sign_skip=True
+                sign_skip=True,
+                acquire_by_hash=False
             ),
             PublishEndpoint(
                 storage='s3:myendpoint',
@@ -258,7 +261,7 @@ class PublishAPISectionTests(TestCase):
                 prefix='s3:myendpoint:test/a_1', distribution='test', label='test', origin='origin',
                 sign_batch=True, sign_passphrase='*********',
                 force_overwrite=True, sign_keyring="/etc/gpg-managed-keyring/pubring.pub",
-                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg"
+                sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg",
             ),
             PublishEndpoint(
                 storage='s3:myendpoint',
