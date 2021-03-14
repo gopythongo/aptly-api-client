@@ -21,11 +21,10 @@ class PublishAPISectionTests(TestCase):
 
     def test_list(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.get("http://test/api/publish",
-                  text='[{"AcquireByHash":false,"Architectures":["amd64"],'
-                       '"ButAutomaticUpgrades":"","Distribution":"saltfix",'
-                       '"Label":"","NotAutomatic":"","Origin":"","Prefix":"saltmirror/buster",'
-                       '"SkipContents":false,"SourceKind":"local","Sources":[{"Component":"main",'
-                       '"Name":"saltmirror"}],"Storage":"s3:maurusnet"}]')
+                  text='[{"AcquireByHash":false,"Architectures":["amd64"],"Distribution":"mn-nightly","Label":"",'
+                       '"Origin":"","Prefix":"nightly/stretch","SkipContents":false,'
+                       '"SourceKind":"local","Sources":[{"Component":"main","Name":"maurusnet"}],'
+                       '"Storage":"s3:maurusnet"}]')
         self.assertSequenceEqual(
             self.papi.list(),
             [
@@ -40,7 +39,8 @@ class PublishAPISectionTests(TestCase):
                     }],
                     architectures=['amd64'],
                     label='',
-                    origin=''
+                    origin='',
+                    acquire_by_hash=False
                 )
             ]
         )
@@ -70,7 +70,8 @@ class PublishAPISectionTests(TestCase):
                 }],
                 architectures=['amd64'],
                 label='',
-                origin=''
+                origin='',
+                acquire_by_hash=False
             )
         )
 
@@ -99,7 +100,8 @@ class PublishAPISectionTests(TestCase):
                 }],
                 architectures=['amd64'],
                 label='',
-                origin=''
+                origin='',
+                acquire_by_hash=False
             )
         )
 
@@ -126,7 +128,8 @@ class PublishAPISectionTests(TestCase):
                 }],
                 architectures=['amd64'],
                 label='',
-                origin=''
+                origin='',
+                acquire_by_hash=False
             )
         )
 
@@ -159,7 +162,8 @@ class PublishAPISectionTests(TestCase):
                 }],
                 architectures=['amd64'],
                 label='',
-                origin=''
+                origin='',
+                acquire_by_hash=False
             )
         )
 
@@ -185,7 +189,8 @@ class PublishAPISectionTests(TestCase):
                 sources=[{'Component': 'main', 'Name': 'aptly-repo'}],
                 architectures=['amd64'],
                 label='test',
-                origin='origin'
+                origin='origin',
+                acquire_by_hash=False
             )
         )
 
@@ -211,7 +216,8 @@ class PublishAPISectionTests(TestCase):
                 sources=[{'Component': 'main', 'Name': 'aptly-repo'}],
                 architectures=['amd64'],
                 label='test',
-                origin='origin'
+                origin='origin',
+                acquire_by_hash=False
             )
         )
 
@@ -235,7 +241,8 @@ class PublishAPISectionTests(TestCase):
                 sources=[{'Component': 'main', 'Name': 'aptly-repo'}],
                 architectures=['amd64'],
                 label='test',
-                origin='origin'
+                origin='origin',
+                acquire_by_hash=False
             )
         )
 
@@ -261,7 +268,8 @@ class PublishAPISectionTests(TestCase):
                 sources=[{'Component': 'main', 'Name': 'aptly-repo'}],
                 architectures=['amd64'],
                 label='test',
-                origin='origin'
+                origin='origin',
+                acquire_by_hash=False
             )
         )
 
@@ -294,7 +302,8 @@ class PublishAPISectionTests(TestCase):
                 }],
                 architectures=['amd64'],
                 label='',
-                origin=''
+                origin='',
+                acquire_by_hash=False
             )
         )
 
