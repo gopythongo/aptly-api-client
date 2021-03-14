@@ -17,6 +17,7 @@ PublishEndpoint = NamedTuple('PublishEndpoint', [
     ('architectures', Sequence[str]),
     ('label', str),
     ('origin', str),
+    ('acquire_by_hash', bool),
 ])
 
 
@@ -36,6 +37,7 @@ class PublishAPISection(BaseAPIClient):
             architectures=cast(List[str], api_response["Architectures"]),
             label=cast(str, api_response["Label"]),
             origin=cast(str, api_response["Origin"]),
+            acquire_by_hash=cast(bool, api_response["AcquireByHash"]),
         )
 
     @staticmethod
@@ -64,7 +66,8 @@ class PublishAPISection(BaseAPIClient):
                 origin: Optional[str] = None, force_overwrite: bool = False,
                 sign_skip: bool = False, sign_batch: bool = True, sign_gpgkey: Optional[str] = None,
                 sign_keyring: Optional[str] = None, sign_secret_keyring: Optional[str] = None,
-                sign_passphrase: Optional[str] = None, sign_passphrase_file: Optional[str] = None) -> PublishEndpoint:
+                sign_passphrase: Optional[str] = None, sign_passphrase_file: Optional[str] = None,
+                acquire_by_hash: Optional[bool] = None) -> PublishEndpoint:
         """
         Example:
 
@@ -101,6 +104,8 @@ class PublishAPISection(BaseAPIClient):
             body["Origin"] = origin
         if force_overwrite:
             body["ForceOverwrite"] = True
+        if acquire_by_hash is not None:
+            body["AcquireByHash"] = acquire_by_hash
 
         sign_dict = {}  # type: Dict[str, Union[bool,str]]
         if sign_skip:
