@@ -54,6 +54,7 @@ Contributors
 * @findmyname666 <findmyname666@users.noreply.github.com>
 * Filip Křesťan <fkrestan@users.noreply.github.com>
 * @mgusek <mgusek@users.noreply.github.com>
+* Samuel Bachmann <samuelba@users.noreply.github.com>
 
 
 License
