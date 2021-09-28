@@ -7,6 +7,7 @@
 
 import os
 import re
+import sys
 from setuptools import setup, find_packages
 
 _package_root = "."
@@ -27,11 +28,15 @@ _packages = find_packages(_package_root, exclude=["*.tests", "*.tests.*", "tests
 _requirements = [
     # intentionally unpinned. We're a library, so we don't need to conflict with others by pinning versions
     # and we don't depend on a specific minimum version.
-    'typing',
     'requests',
     'iso8601',
     'pytz',
 ]
+
+# Typing is only requested if the Python version is older than Python3.5. See
+# https://github.com/python/typing for more info
+if sys.version_info < (3, 5):
+    _requirements.append('typing')
 
 try:
     long_description = open(os.path.join(_HERE, 'README.rst')).read()
