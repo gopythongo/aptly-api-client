@@ -4,11 +4,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from .base import *  # noqa
-from .client import *  # noqa
-from .files import *  # noqa
-from .misc import *  # noqa
-from .packages import *  # noqa
-from .publish import *  # noqa
-from .repos import *  # noqa
-from .snapshots import *  # noqa
+from .test_base import *  # noqa
+from .test_client import *  # noqa
+from .test_files import *  # noqa
+from .test_misc import *  # noqa
+from .test_packages import *  # noqa
+from .test_publish import *  # noqa
+from .test_repos import *  # noqa
+from .test_snapshots import *  # noqa
