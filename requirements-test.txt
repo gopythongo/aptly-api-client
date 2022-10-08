@@ -5,4 +5,4 @@ flake8==3.8.4
 pep257==0.7.0
 doc8==0.8.1
 Pygments==2.8.1
-mypy==0.812
+mypy==0.982
