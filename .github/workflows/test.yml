@@ -26,7 +26,7 @@ jobs:
                   pip install -r requirements-test.txt -e .
             - name: Run Tests
               run: |
-                  pytest --cov=aptly-api-client
+                  pytest --cov=aptly_api
                   coverage report -m
                   coverage lcov
             - name: Run Coveralls
