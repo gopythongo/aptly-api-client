@@ -1,11 +1,11 @@
 Python 3 Aptly API client
 =========================
 
-.. image:: https://coveralls.io/repos/github/gopythongo/aptly-api-client/badge.svg?branch=HEAD
-    :target: https://coveralls.io/github/gopythongo/aptly-api-client?branch=HEAD
+.. image:: https://coveralls.io/repos/github/gopythongo/aptly-api-client/badge.svg?branch=master
+    :target: https://coveralls.io/github/gopythongo/aptly-api-client?branch=master
 
-.. image:: https://travis-ci.org/gopythongo/aptly-api-client.svg?branch=master
-    :target: https://travis-ci.org/gopythongo/aptly-api-client
+.. image:: https://github.com/gopythongo/aptly-api-client/actions/workflows/test.yml/badge.svg
+    :target: https://github.com/gopythongo/aptly-api-client/actions/workflows/test.yml
 
 This is a thin abstraction layer for interfacing with
 `Aptly's HTTP API <https://www.aptly.info/doc/api/>`__. It's used by
