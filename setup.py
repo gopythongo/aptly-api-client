@@ -27,7 +27,6 @@ _packages = find_packages(_package_root, exclude=["*.tests", "*.tests.*", "tests
 _requirements = [
     # intentionally unpinned. We're a library, so we don't need to conflict with others by pinning versions
     # and we don't depend on a specific minimum version.
-    'typing',
     'requests',
     'iso8601',
     'pytz',
