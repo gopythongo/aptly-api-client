@@ -22,14 +22,13 @@ jobs:
                   python-version: ${{ matrix.python-version }}
             - name: Install Dependencies
               run: |
-                python -m pip install --upgrade pip wheel
-                pip install -r requirements-test.txt -e .
+                  python -m pip install --upgrade pip wheel
+                  pip install -r requirements-test.txt -e .
             - name: Run Tests
               run: |
-                pytest
-                coverage run --source=aptly_api pytest
-                coverage report -m
-                coverage lcov
+                  pytest --cov=aptly-api-client
+                  coverage report -m
+                  coverage lcov
             - name: Run Coveralls
               uses: coverallsapp/github-action@master
               with:
@@ -37,7 +36,7 @@ jobs:
                   path-to-lcov: coverage.lcov
             - name: Run Flake8
               run: |
-                flake8 --max-line-length=120 aptly_api setup.py
+                  flake8 --max-line-length=120 aptly_api setup.py
             - name: Run mypy
               run: |
-                mypy --ignore-missing-imports --follow-imports=skip --disallow-untyped-calls --disallow-untyped-defs -p aptly_api
+                  mypy --ignore-missing-imports --follow-imports=skip --disallow-untyped-calls --disallow-untyped-defs -p aptly_api
