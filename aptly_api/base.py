@@ -11,19 +11,24 @@ from requests.auth import AuthBase
 
 _filetype = Optional[
     Union[
-        Dict[str, Union[
-             Union[TextIO, BinaryIO, str, bytes],
-             Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes]],
-             Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str],
-             Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str, Dict[str, str]]
-        ]],
-        Sequence[
-            Tuple[str, Union[
+        Dict[
+            str, Union[
                 Union[TextIO, BinaryIO, str, bytes],
                 Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes]],
                 Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str],
                 Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str, Dict[str, str]]
-        ]]],
+            ]
+        ],
+        Sequence[
+            Tuple[
+                str, Union[
+                    Union[TextIO, BinaryIO, str, bytes],
+                    Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes]],
+                    Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str],
+                    Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str, Dict[str, str]]
+                ]
+            ]
+        ],
     ]
 ]
 
