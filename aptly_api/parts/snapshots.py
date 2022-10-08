@@ -28,7 +28,7 @@ class SnapshotAPISection(BaseAPIClient):
             name=cast(str, api_response["Name"]),
             description=api_response["Description"] if "Description" in api_response else None,
             created_at=iso8601.parse_date(
-                api_response["CreatedAt"]
+                cast(str, api_response["CreatedAt"])
             ) if "CreatedAt" in api_response else None,
         )
 

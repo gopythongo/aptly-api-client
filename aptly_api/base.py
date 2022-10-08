@@ -1,50 +1,41 @@
-# -* encoding: utf-8 *-
-from _typeshed import SupportsRead
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from typing import Sequence, Dict, Tuple, Optional, Union, List, Any, MutableMapping, Mapping, Iterable
+from typing import IO, TextIO, BinaryIO, Sequence, Dict, Tuple, Optional, Union, List, Any, MutableMapping, Iterable, \
+    Mapping
 from urllib.parse import urljoin
-
-from typing.io import IO, BinaryIO
 
 import requests
 from requests.auth import AuthBase
 
-
 _filetype = Optional[
     Union[
-        Mapping[str, Union[
-            Union[SupportsRead[Union[str, bytes]], str, bytes],
-            Tuple[
-                Optional[str],
-                Union[SupportsRead[Union[str, bytes]], str, bytes]
-            ],
-            Tuple[
-                Optional[str],
-                Union[SupportsRead[Union[str, bytes]], str, bytes],
-                str
-            ],
-            Tuple[
-                Optional[str],
-                Union[SupportsRead[Union[str, bytes]], str, bytes],
-                str,
-                Mapping[str, str]
-            ]
+        Dict[str, Union[
+             Union[TextIO, BinaryIO, str, bytes],
+             Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes]],
+             Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str],
+             Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str, Dict[str, str]]
         ]],
-        Iterable[
-            Tuple[
-                str,
-                Union[
-                    Union[SupportsRead[Union[str, bytes]], str, bytes],
-                    Tuple[Optional[str], Union[SupportsRead[Union[str, bytes]], str, bytes]],
-                    Tuple[Optional[str], Union[SupportsRead[Union[str, bytes]], str, bytes], str],
-                    Tuple[Optional[str], Union[SupportsRead[Union[str, bytes]], str, bytes], str, Mapping[str, str]]
-                ]
-            ]
-        ]
+        Sequence[
+            Tuple[str, Union[
+                Union[TextIO, BinaryIO, str, bytes],
+                Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes]],
+                Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str],
+                Tuple[Optional[str], Union[TextIO, BinaryIO, str, bytes], str, Dict[str, str]]
+        ]]],
+    ]
+]
+
+_datatype = Optional[
+    Union[
+        Iterable[bytes],
+        str,
+        bytes,
+        Union[TextIO, BinaryIO],
+        List[Tuple[Any, Any]],
+        Tuple[Tuple[Any, Any], ...],
+        Mapping[Any, Any]
     ]
 ]
 
@@ -125,7 +116,7 @@ class BaseAPIClient:
         return resp
 
     def do_delete(self, urlpath: str, params: Optional[Dict[str, str]] = None,
-                  data: Union[str, Dict[str, str], Sequence[Tuple[str, str]], None] = None,
+                  data: _datatype = None,
                   json: Union[List[Dict[str, Any]], Dict[str, Any], None] = None) -> requests.Response:
         resp = requests.delete(self._make_url(urlpath), params=params, data=data, json=json,
                                verify=self.ssl_verify, cert=self.ssl_cert, auth=self.http_auth,
