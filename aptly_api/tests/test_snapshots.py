@@ -1,4 +1,5 @@
 # -* encoding: utf-8 *-
+from zoneinfo import ZoneInfo
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,7 +8,6 @@ from typing import Any
 from unittest.case import TestCase
 
 import iso8601
-import pytz
 import requests_mock
 
 from aptly_api.base import AptlyAPIException
@@ -66,7 +66,7 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-1',
                 description='Snapshot from local repo [aptly-repo]',
-                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=pytz.UTC)
+                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=ZoneInfo["UTC"])
             )
         )
 
@@ -153,7 +153,7 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-1',
                 description='Snapshot from local repo [aptly-repo]',
-                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=pytz.UTC)
+                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=ZoneInfo["UTC"])
             )
         )
 
@@ -166,7 +166,7 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-2',
                 description='test',
-                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=pytz.UTC)
+                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=ZoneInfo["UTC"])
             )
         )
 
@@ -200,6 +200,6 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-2',
                 description='test',
-                created_at=iso8601.parse_date('2017-06-07T14:19:07.706408213Z', default_timezone=pytz.UTC)
+                created_at=iso8601.parse_date('2017-06-07T14:19:07.706408213Z', default_timezone=ZoneInfo["UTC"])
             )
         )

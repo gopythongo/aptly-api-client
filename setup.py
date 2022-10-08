@@ -29,7 +29,6 @@ _requirements = [
     # and we don't depend on a specific minimum version.
     'requests',
     'iso8601',
-    'pytz',
 ]
 
 try:
