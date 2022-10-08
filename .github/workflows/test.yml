@@ -1,4 +1,4 @@
-name: Django CI
+name: Linters
 
 on:
   push:
