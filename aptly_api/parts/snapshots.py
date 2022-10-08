@@ -4,7 +4,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from datetime import datetime
-from zoneinfo import ZoneInfo
 
 from typing import NamedTuple, Sequence, Optional, Dict, Union, cast, List
 from urllib.parse import quote
@@ -29,7 +28,7 @@ class SnapshotAPISection(BaseAPIClient):
             name=cast(str, api_response["Name"]),
             description=api_response["Description"] if "Description" in api_response else None,
             created_at=iso8601.parse_date(
-                api_response["CreatedAt"], default_timezone=ZoneInfo["UTC"],
+                api_response["CreatedAt"]
             ) if "CreatedAt" in api_response else None,
         )
 

@@ -1,6 +1,3 @@
-# -* encoding: utf-8 *-
-from zoneinfo import ZoneInfo
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -66,7 +63,7 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-1',
                 description='Snapshot from local repo [aptly-repo]',
-                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=ZoneInfo["UTC"])
+                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z')
             )
         )
 
@@ -153,7 +150,7 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-1',
                 description='Snapshot from local repo [aptly-repo]',
-                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=ZoneInfo["UTC"])
+                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z')
             )
         )
 
@@ -166,7 +163,7 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-2',
                 description='test',
-                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z', default_timezone=ZoneInfo["UTC"])
+                created_at=iso8601.parse_date('2017-06-03T23:43:40.275605639Z')
             )
         )
 
@@ -200,6 +197,6 @@ class SnapshotAPISectionTests(TestCase):
             Snapshot(
                 name='aptly-repo-2',
                 description='test',
-                created_at=iso8601.parse_date('2017-06-07T14:19:07.706408213Z', default_timezone=ZoneInfo["UTC"])
+                created_at=iso8601.parse_date('2017-06-07T14:19:07.706408213Z')
             )
         )
