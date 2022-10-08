@@ -39,5 +39,6 @@ jobs:
                   flake8 --max-line-length=120 aptly_api setup.py
             - name: Run mypy
               run: |
-                  mypy --install-types --ignore-missing-imports --follow-imports=skip --disallow-untyped-calls \
+                  mypy --install-types --non-interactive \
+                       --ignore-missing-imports --follow-imports=skip --disallow-untyped-calls \
                        --disallow-untyped-defs -p aptly_api
