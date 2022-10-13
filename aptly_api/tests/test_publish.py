@@ -292,6 +292,7 @@ class PublishAPISectionTests(TestCase):
                 sign_passphrase="123456",
                 sign_keyring="/etc/gpg-managed-keyring/pubring.pub",
                 sign_secret_keyring="/etc/gpg-managed-keyring/secring.gpg",
+                skip_contents=True,
                 skip_cleanup=True
             ),
             PublishEndpoint(
