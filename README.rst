@@ -55,6 +55,7 @@ Contributors
 * Filip Křesťan <fkrestan@users.noreply.github.com>
 * @mgusek <mgusek@users.noreply.github.com>
 * Samuel Bachmann <samuelba@users.noreply.github.com>
+* @agustinhenze <agustinhenze@users.noreply.github.com>
 
 
 License
