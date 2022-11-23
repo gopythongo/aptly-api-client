@@ -12,6 +12,7 @@ import iso8601
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 from aptly_api.parts.packages import Package, PackageAPISection
+from aptly_api.parts.mirrors import Mirror
 
 Snapshot = NamedTuple('Snapshot', [
     ('name', str),
@@ -49,7 +50,16 @@ class SnapshotAPISection(BaseAPIClient):
         if description is not None:
             body["Description"] = description
 
-        resp = self.do_post("api/repos/%s/snapshots" % quote(reponame), json=body)
+        resp = self.do_post("api/repos/%s/snapshots" %
+                            quote(reponame), json=body)
+        return self.snapshot_from_response(resp.json())
+
+    def create_from_mirror(self, mirrorname: str, snapshotname: str, description: Optional[str] = None) -> Snapshot:
+        body = {
+            "Name": snapshotname
+        }
+        resp = self.do_post("api/mirrors/%s/snapshots" %
+                            quote(mirrorname), json=body)
         return self.snapshot_from_response(resp.json())
 
     def create_from_packages(self, snapshotname: str, description: Optional[str] = None,
@@ -99,7 +109,8 @@ class SnapshotAPISection(BaseAPIClient):
         if detailed:
             params["format"] = "details"
 
-        resp = self.do_get("api/snapshots/%s/packages" % quote(snapshotname), params=params)
+        resp = self.do_get("api/snapshots/%s/packages" %
+                           quote(snapshotname), params=params)
         ret = []
         for rpkg in resp.json():
             ret.append(PackageAPISection.package_from_response(rpkg))
@@ -115,5 +126,6 @@ class SnapshotAPISection(BaseAPIClient):
         self.do_delete("api/snapshots/%s" % quote(snapshotname), params=params)
 
     def diff(self, snapshot1: str, snapshot2: str) -> Sequence[Dict[str, str]]:
-        resp = self.do_get("api/snapshots/%s/diff/%s" % (quote(snapshot1), quote(snapshot2),))
+        resp = self.do_get("api/snapshots/%s/diff/%s" %
+                           (quote(snapshot1), quote(snapshot2),))
         return cast(List[Dict[str, str]], resp.json())
