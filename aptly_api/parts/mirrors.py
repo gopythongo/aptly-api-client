@@ -1,0 +1,177 @@
+# -* encoding: utf-8 *-
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+from typing import NamedTuple, Sequence, Dict, Union, cast, Optional, List
+from urllib.parse import quote
+
+from aptly_api.base import BaseAPIClient, AptlyAPIException
+from aptly_api.parts.packages import Package, PackageAPISection
+
+
+Mirror = NamedTuple('Mirror', [
+    ('uuid', str),
+    ('name', str),
+    ('archiveroot', str),
+    ('distribution', str),
+    ('components', Sequence[str]),
+    ('architectures', Sequence[str]),
+    ('meta', Sequence[Dict[str, str]]),
+    ('downloaddate', str),
+    ('filter', str),
+    ('status', str),
+    ('worker_pid', int),
+    ('filter_with_deps', bool),
+    ('skip_component_check', bool),
+    ('skip_architecture_check', bool),
+    ('download_sources', bool),
+    ('download_udebs', bool),
+    ('download_installer', bool)
+])
+
+
+class MirrorsAPISection(BaseAPIClient):
+    @staticmethod
+    def mirror_from_response(api_response: Dict[str, str]) -> Mirror:
+        return Mirror(
+            uuid=cast(str, api_response["UUID"]),
+            name=cast(str, api_response["Name"]),
+            archiveroot=cast(str, api_response["ArchiveRoot"]),
+            distribution=cast(str, api_response["Distribution"]),
+            components=cast(List[str], api_response["Components"]),
+            architectures=cast(List[str], api_response["Architectures"]),
+            meta=cast(List[Dict[str, str]], api_response["Meta"]),
+            downloaddate=cast(str, api_response["LastDownloadDate"]),
+            filter=cast(str, api_response["Filter"]),
+            status=cast(str, api_response["Status"]),
+            worker_pid=cast(int, api_response["WorkerPID"]),
+            filter_with_deps=cast(bool, api_response["FilterWithDeps"]),
+            skip_component_check=cast(
+                bool, api_response["SkipComponentCheck"]),
+            skip_architecture_check=cast(
+                bool, api_response["SkipArchitectureCheck"]),
+            download_sources=cast(bool, api_response["DownloadSources"]),
+            download_udebs=cast(bool, api_response["DownloadUdebs"]),
+            download_installer=cast(bool, api_response["DownloadInstaller"])
+        )
+
+    def list(self) -> Sequence[Mirror]:
+        resp = self.do_get("api/mirrors")
+
+        mirrors = []
+        for mirr in resp.json():
+            mirrors.append(
+                self.mirror_from_response(mirr)
+            )
+        return mirrors
+
+    def update(self, name: str, ignore_signatures: bool = False) -> Sequence[Mirror]:
+        body = {}
+        if ignore_signatures:
+            body["IgnoreSignatures"] = ignore_signatures
+        resp = self.do_put("api/mirrors/%s" % (quote(name)), json=body)
+        return resp
+
+    def edit(self, name: str, newname: Optional[str] = None, archiveroot: Optional[str] = None,
+             filter: Optional[str] = None, architectures: Optional[List[str]] = None,
+             components: Optional[List[str]] = None, keyrings: Optional[List[str]] = None,
+             filter_with_deps: bool = False, skip_existing_packages: bool = False,
+             download_sources: bool = False, download_udebs: bool = False,
+             skip_component_check: bool = False, ignore_checksums: bool = False,
+             ignore_signatures: bool = False, force_update: bool = False) -> Mirror:
+
+        body = {}
+        if newname:
+            body["Name"] = newname
+        if archiveroot:
+            body["ArchiveURL"] = archiveroot
+        if filter:
+            body["Filter"] = filter
+        if architectures:
+            body["Architectures"] = architectures
+        if components:
+            body["Components"] = components
+        if keyrings:
+            body["Keyrings"] = keyrings
+        if filter_with_deps:
+            body["FilterWithDeps"] = filter_with_deps
+        if download_sources:
+            body["DownloadSources"] = download_sources
+        if download_udebs:
+            body["DownloadUdebs"] = download_udebs
+        if skip_component_check:
+            body["SkipComponentCheck"] = skip_component_check
+        if ignore_checksums:
+            body["IgnoreChecksums"] = ignore_checksums
+        if ignore_signatures:
+            body["IgnoreSignatures"] = ignore_signatures
+        if skip_existing_packages:
+            body["SkipExistingPackages"] = skip_existing_packages
+        if force_update:
+            body["ForceUpdate"] = force_update
+
+        resp = self.do_put("api/mirrors/%s" % (quote(name)), json=body)
+        return resp
+
+    def show(self, name: str) -> Mirror:
+        resp = self.do_get("api/mirrors/%s" % (quote(name)))
+
+        return self.mirror_from_response(resp.json())
+
+    def list_packages(self, name: str, query: Optional[str] = None, with_deps: bool = False,
+                      detailed: bool = False) -> Sequence[Package]:
+        params = {}
+        if query is not None:
+            params["q"] = query
+        if with_deps:
+            params["withDeps"] = "1"
+        if detailed:
+            params["format"] = "details"
+
+        resp = self.do_get("api/mirrors/%s/packages" %
+                           quote(name), params=params)
+        ret = []
+        for rpkg in resp.json():
+            ret.append(PackageAPISection.package_from_response(rpkg))
+        return ret
+
+    def delete(self, name: str) -> Sequence[Mirror]:
+        resp = self.do_delete("api/mirrors/%s" % quote(name))
+        return resp
+
+    def create(self, name: str, archiveroot: str, distribution: Optional[str] = None,
+               filter: Optional[str] = None, components: Optional[List[str]] = None,
+               architectures: Optional[List[str]] = None, keyrings: Optional[List[str]] = None,
+               download_sources: bool = False, download_udebs: bool = False,
+               download_installer: bool = False, filter_with_deps: bool = False,
+               skip_component_check: bool = False, ignore_signatures: bool = False) -> Mirror:
+        data = {
+            "Name": name,
+            "ArchiveURL": archiveroot
+        }
+
+        if ignore_signatures:
+            data["IgnoreSignatures"] = ignore_signatures
+        if keyrings:
+            data["Keyrings"] = keyrings
+        if filter:
+            data["Filter"] = filter
+        if distribution:
+            data["Distribution"] = distribution
+        if components:
+            data["Components"] = components
+        if architectures:
+            data["Architectures"] = architectures
+        if download_sources:
+            data["DownloadSources"] = download_sources
+        if download_udebs:
+            data["DownloadUdebs"] = download_udebs
+        if download_installer:
+            data["DownloadInstaller"] = download_installer
+        if skip_component_check:
+            data["SkipComponentCheck"] = skip_component_check
+
+        resp = self.do_post("api/mirrors", json=data)
+
+        return self.mirror_from_response(resp.json())
