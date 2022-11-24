@@ -13,14 +13,14 @@ from aptly_api.parts.packages import Package, PackageAPISection
 Mirror = NamedTuple('Mirror', [
     ('uuid', str),
     ('name', str),
-    ('archiveroot', str),
+    ('archiveurl', str),
     ('distribution', str),
     ('components', Sequence[str]),
     ('architectures', Sequence[str]),
     ('meta', Sequence[Dict[str, str]]),
     ('downloaddate', str),
     ('filter', str),
-    ('status', str),
+    ('status', int),
     ('worker_pid', int),
     ('filter_with_deps', bool),
     ('skip_component_check', bool),
@@ -35,17 +35,27 @@ class MirrorsAPISection(BaseAPIClient):
     @staticmethod
     def mirror_from_response(api_response: Dict[str, str]) -> Mirror:
         return Mirror(
-            uuid=cast(str, api_response["UUID"]),
+            uuid=cast(str, api_response["UUID"]
+                      ) if "UUID" in api_response else None,
             name=cast(str, api_response["Name"]),
-            archiveroot=cast(str, api_response["ArchiveRoot"]),
-            distribution=cast(str, api_response["Distribution"]),
-            components=cast(List[str], api_response["Components"]),
-            architectures=cast(List[str], api_response["Architectures"]),
-            meta=cast(List[Dict[str, str]], api_response["Meta"]),
-            downloaddate=cast(str, api_response["LastDownloadDate"]),
-            filter=cast(str, api_response["Filter"]),
-            status=cast(str, api_response["Status"]),
-            worker_pid=cast(int, api_response["WorkerPID"]),
+            archiveurl=cast(
+                str, api_response["ArchiveRoot"]),
+            distribution=cast(
+                str, api_response["Distribution"]) if "Distribution" in api_response else None,
+            components=cast(List[str], api_response["Components"]
+                            )if "Components" in api_response else None,
+            architectures=cast(List[str], api_response["Architectures"]
+                               ) if "Architectures" in api_response else None,
+            meta=cast(List[Dict[str, str]], api_response["Meta"]
+                      ) if "Meta" in api_response else None,
+            downloaddate=cast(
+                str, api_response["LastDownloadDate"]) if "LastDownloadDate" in api_response else None,
+            filter=cast(str, api_response["Filter"]
+                        ) if "Filter" in api_response else None,
+            status=cast(int, api_response["Status"]
+                        )if "Status" in api_response else None,
+            worker_pid=cast(
+                int, api_response["WorkerPID"])if "WorkerPID" in api_response else None,
             filter_with_deps=cast(bool, api_response["FilterWithDeps"]),
             skip_component_check=cast(
                 bool, api_response["SkipComponentCheck"]),
@@ -73,7 +83,7 @@ class MirrorsAPISection(BaseAPIClient):
         resp = self.do_put("api/mirrors/%s" % (quote(name)), json=body)
         return resp
 
-    def edit(self, name: str, newname: Optional[str] = None, archiveroot: Optional[str] = None,
+    def edit(self, name: str, newname: Optional[str] = None, archiveurl: Optional[str] = None,
              filter: Optional[str] = None, architectures: Optional[List[str]] = None,
              components: Optional[List[str]] = None, keyrings: Optional[List[str]] = None,
              filter_with_deps: bool = False, skip_existing_packages: bool = False,
@@ -84,8 +94,8 @@ class MirrorsAPISection(BaseAPIClient):
         body = {}
         if newname:
             body["Name"] = newname
-        if archiveroot:
-            body["ArchiveURL"] = archiveroot
+        if archiveurl:
+            body["ArchiveURL"] = archiveurl
         if filter:
             body["Filter"] = filter
         if architectures:
@@ -140,7 +150,7 @@ class MirrorsAPISection(BaseAPIClient):
         resp = self.do_delete("api/mirrors/%s" % quote(name))
         return resp
 
-    def create(self, name: str, archiveroot: str, distribution: Optional[str] = None,
+    def create(self, name: str, archiveurl: str, distribution: Optional[str] = None,
                filter: Optional[str] = None, components: Optional[List[str]] = None,
                architectures: Optional[List[str]] = None, keyrings: Optional[List[str]] = None,
                download_sources: bool = False, download_udebs: bool = False,
@@ -148,7 +158,7 @@ class MirrorsAPISection(BaseAPIClient):
                skip_component_check: bool = False, ignore_signatures: bool = False) -> Mirror:
         data = {
             "Name": name,
-            "ArchiveURL": archiveroot
+            "ArchiveURL": archiveurl
         }
 
         if ignore_signatures:
