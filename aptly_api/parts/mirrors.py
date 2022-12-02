@@ -3,10 +3,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from typing import NamedTuple, Sequence, Dict, Union, cast, Optional, List
+from typing import NamedTuple, Sequence, Dict, cast, Optional, List
 from urllib.parse import quote
 
-from aptly_api.base import BaseAPIClient, AptlyAPIException
+from aptly_api.base import BaseAPIClient
 from aptly_api.parts.packages import Package, PackageAPISection
 
 
@@ -41,7 +41,8 @@ class MirrorsAPISection(BaseAPIClient):
             archiveurl=cast(
                 str, api_response["ArchiveRoot"]),
             distribution=cast(
-                str, api_response["Distribution"]) if "Distribution" in api_response else None,
+                str, api_response["Distribution"])
+            if "Distribution" in api_response else None,
             components=cast(List[str], api_response["Components"]
                             )if "Components" in api_response else None,
             architectures=cast(List[str], api_response["Architectures"]
@@ -49,13 +50,15 @@ class MirrorsAPISection(BaseAPIClient):
             meta=cast(List[Dict[str, str]], api_response["Meta"]
                       ) if "Meta" in api_response else None,
             downloaddate=cast(
-                str, api_response["LastDownloadDate"]) if "LastDownloadDate" in api_response else None,
+                str, api_response["LastDownloadDate"])
+            if "LastDownloadDate" in api_response else None,
             filter=cast(str, api_response["Filter"]
                         ) if "Filter" in api_response else None,
             status=cast(int, api_response["Status"]
                         )if "Status" in api_response else None,
             worker_pid=cast(
-                int, api_response["WorkerPID"])if "WorkerPID" in api_response else None,
+                int, api_response["WorkerPID"])
+            if "WorkerPID" in api_response else None,
             filter_with_deps=cast(bool, api_response["FilterWithDeps"]),
             skip_component_check=cast(
                 bool, api_response["SkipComponentCheck"]),
