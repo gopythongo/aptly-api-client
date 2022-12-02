@@ -12,7 +12,6 @@ import iso8601
 
 from aptly_api.base import BaseAPIClient, AptlyAPIException
 from aptly_api.parts.packages import Package, PackageAPISection
-from aptly_api.parts.mirrors import Mirror
 
 Snapshot = NamedTuple('Snapshot', [
     ('name', str),

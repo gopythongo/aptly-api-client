@@ -33,7 +33,8 @@ class Client:
         self.snapshots = SnapshotAPISection(base_url=self.__aptly_server_url, ssl_verify=ssl_verify,
                                             ssl_cert=ssl_cert, http_auth=http_auth, timeout=timeout)
         self.mirrors = MirrorsAPISection(
-            base_url=self.__aptly_server_url, ssl_verify=ssl_verify, ssl_cert=ssl_cert, http_auth=http_auth, timeout=timeout)
+            base_url=self.__aptly_server_url, ssl_verify=ssl_verify,
+            ssl_cert=ssl_cert, http_auth=http_auth, timeout=timeout)
 
     @property
     def aptly_server_url(self) -> str:

@@ -8,7 +8,6 @@ from unittest.case import TestCase
 
 import requests_mock
 
-from aptly_api.base import AptlyAPIException
 from aptly_api.parts.packages import Package
 from aptly_api.parts.mirrors import MirrorsAPISection, Mirror
 
@@ -21,7 +20,21 @@ class MirrorsAPISectionTests(TestCase):
 
     def test_create(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/mirrors",
-                   text='{"UUID": "2cb5985a-a23f-4a1f-8eb6-d5409193b4eb", "Name": "aptly-mirror", "ArchiveRoot": "https://deb.nodesource.com/node_10.x/", "Distribution": "bionic", "Components": ["main"], "Architectures": ["amd64"], "Meta": {"Architectures": "i386 amd64 armhf arm64", "Codename": "bionic", "Components": "main", "Date": "Tue, 06 Apr 2021 21:05:41 UTC","Description": " Apt Repository for the Node.JS 10.x Branch", "Label": "Node Source", "Origin": "Node Source"}, "LastDownloadDate": "0001-01-01T00:00:00Z", "Filter": "test", "Status": 0, "WorkerPID": 0, "FilterWithDeps": true, "SkipComponentCheck": true, "SkipArchitectureCheck": true, "DownloadSources": true, "DownloadUdebs": true, "DownloadInstaller": true}'
+                   text="""{"UUID": "2cb5985a-a23f-4a1f-8eb6-d5409193b4eb",
+                   "Name": "aptly-mirror",
+                   "ArchiveRoot": "https://deb.nodesource.com/node_10.x/",
+                   "Distribution": "bionic", "Components": ["main"],
+                   "Architectures": ["amd64"],
+                   "Meta": {"Architectures": "i386 amd64 armhf arm64",
+                   "Codename": "bionic", "Components": "main",
+                   "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
+                   "Description": " Apt Repository for the Node.JS 10.x Branch",
+                   "Label": "Node Source", "Origin": "Node Source"},
+                   "LastDownloadDate": "0001-01-01T00:00:00Z",
+                   "Filter": "test", "Status": 0, "WorkerPID": 0,
+                   "FilterWithDeps": true, "SkipComponentCheck": true,
+                   "SkipArchitectureCheck": true, "DownloadSources": true,
+                   "DownloadUdebs": true, "DownloadInstaller": true}"""
                    )
         self.assertEqual(
             self.mapi.create(name="aptly-mirror", archiveurl='https://deb.nodesource.com/node_10.x/',
@@ -60,7 +73,21 @@ class MirrorsAPISectionTests(TestCase):
 
     def test_list(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.get("http://test/api/mirrors",
-                  text='[{"UUID": "2cb5985a-a23f-4a1f-8eb6-d5409193b4eb", "Name": "aptly-mirror", "ArchiveRoot": "https://deb.nodesource.com/node_10.x/", "Distribution": "bionic", "Components": ["main"], "Architectures": ["amd64"], "Meta": {"Architectures": "i386 amd64 armhf arm64", "Codename": "bionic", "Components": "main", "Date": "Tue, 06 Apr 2021 21:05:41 UTC","Description": " Apt Repository for the Node.JS 10.x Branch", "Label": "Node Source", "Origin": "Node Source"}, "LastDownloadDate": "0001-01-01T00:00:00Z", "Filter": "", "Status": 0, "WorkerPID": 0, "FilterWithDeps": false, "SkipComponentCheck": false, "SkipArchitectureCheck": false, "DownloadSources": false, "DownloadUdebs": false, "DownloadInstaller": false}]'
+                  text="""[{"UUID": "2cb5985a-a23f-4a1f-8eb6-d5409193b4eb",
+                  "Name": "aptly-mirror",
+                  "ArchiveRoot": "https://deb.nodesource.com/node_10.x/",
+                  "Distribution": "bionic", "Components": ["main"],
+                  "Architectures": ["amd64"],
+                  "Meta": {"Architectures": "i386 amd64 armhf arm64",
+                  "Codename": "bionic", "Components": "main",
+                  "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
+                  "Description": " Apt Repository for the Node.JS 10.x Branch",
+                  "Label": "Node Source", "Origin": "Node Source"},
+                  "LastDownloadDate": "0001-01-01T00:00:00Z", "Filter": "",
+                  "Status": 0, "WorkerPID": 0, "FilterWithDeps": false,
+                  "SkipComponentCheck": false, "SkipArchitectureCheck": false,
+                  "DownloadSources": false, "DownloadUdebs": false,
+                  "DownloadInstaller": false}]"""
                   )
         self.assertSequenceEqual(
             self.mapi.list(),
@@ -95,7 +122,21 @@ class MirrorsAPISectionTests(TestCase):
 
     def test_show(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.get("http://test/api/mirrors/aptly-mirror",
-                  text='{"UUID": "2cb5985a-a23f-4a1f-8eb6-d5409193b4eb", "Name": "aptly-mirror", "ArchiveRoot": "https://deb.nodesource.com/node_10.x/", "Distribution": "bionic", "Components": ["main"], "Architectures": ["amd64"], "Meta": {"Architectures": "i386 amd64 armhf arm64", "Codename": "bionic", "Components": "main", "Date": "Tue, 06 Apr 2021 21:05:41 UTC","Description": " Apt Repository for the Node.JS 10.x Branch", "Label": "Node Source", "Origin": "Node Source"}, "LastDownloadDate": "0001-01-01T00:00:00Z", "Filter": "", "Status": 0, "WorkerPID": 0, "FilterWithDeps": false, "SkipComponentCheck": false, "SkipArchitectureCheck": false, "DownloadSources": false, "DownloadUdebs": false, "DownloadInstaller": false}'
+                  text="""{"UUID": "2cb5985a-a23f-4a1f-8eb6-d5409193b4eb",
+                  "Name": "aptly-mirror",
+                  "ArchiveRoot": "https://deb.nodesource.com/node_10.x/",
+                  "Distribution": "bionic", "Components": ["main"],
+                  "Architectures": ["amd64"],
+                  "Meta": {"Architectures": "i386 amd64 armhf arm64",
+                  "Codename": "bionic", "Components": "main",
+                  "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
+                  "Description": " Apt Repository for the Node.JS 10.x Branch",
+                  "Label": "Node Source", "Origin": "Node Source"},
+                  "LastDownloadDate": "0001-01-01T00:00:00Z", "Filter": "",
+                  "Status": 0, "WorkerPID": 0, "FilterWithDeps": false,
+                  "SkipComponentCheck": false, "SkipArchitectureCheck": false,
+                  "DownloadSources": false, "DownloadUdebs": false,
+                  "DownloadInstaller": false}"""
                   )
         self.assertEqual(
             self.mapi.show(name="aptly-mirror"),
@@ -148,8 +189,9 @@ class MirrorsAPISectionTests(TestCase):
             text="""[{
                       "Architecture":"amd64",
                       "Conflicts": "nodejs-dev, nodejs-legacy, npm",
-                      "Depends":"1libc6 (>= 2.9), libgcc1 (>= 1:3.4), libstdc++6 (>= 4.4.0), python-minimal, ca-certificates",
-                      "Description":"Node.js event-based server-side javascript engine\\n",
+                      "Depends":"1libc6 (>= 2.9), libgcc1 (>= 1:3.4),"""
+            """ libstdc++6 (>= 4.4.0), python-minimal, ca-certificates",
+                      "Description":" Node.js event-based server-side javascript engine\\n",
                       "Filename":"nodejs_10.24.1-1nodesource1_amd64.deb",
                       "FilesHash":"1f74a6abf6acc572",
                       "Homepage":"https://nodejs.org",
@@ -163,7 +205,8 @@ class MirrorsAPISectionTests(TestCase):
                       "Provides":"nodejs-dev, nodejs-legacy, npm",
                       "SHA1":"a3bc5a29614eab366bb3644abb1e602b5c8953d5",
                       "SHA256":"4b374d16b536cf1a3963ddc4575ed2b68b28b0b5ea6eefe93c942dfc0ed35177",
-                      "SHA512":"bf203bb319de0c5f7ed3b6ba69de39b1ea8b5086b872561379bd462dd93f07969ca64fa01ade01ff08fa13a4e5e28625b59292ba44bc01ba876ec95875630460",
+                      "SHA512":"bf203bb319de0c5f7ed3b6ba69de39b1ea8b5086b872561379bd462dd93f0796"""
+            """9ca64fa01ade01ff08fa13a4e5e28625b59292ba44bc01ba876ec95875630460",
                       "Section":"web",
                       "ShortKey":"Pamd64 nodejs 10.24.1-1nodesource1",
                       "Size":"15949164",
@@ -179,10 +222,11 @@ class MirrorsAPISectionTests(TestCase):
                     short_key='Pamd64 nodejs 10.24.1-1nodesource1',
                     files_hash='1f74a6abf6acc572',
                     fields={
-                        'Architecture': 'amd64',
+                        "Architecture": "amd64",
                         'Conflicts': 'nodejs-dev, nodejs-legacy, npm',
-                        'Depends': '1libc6 (>= 2.9), libgcc1 (>= 1:3.4), libstdc++6 (>= 4.4.0), python-minimal, ca-certificates',
-                        'Description': 'Node.js event-based server-side javascript engine\n',
+                        'Depends': '1libc6 (>= 2.9), libgcc1 (>= 1:3.4), '
+                        'libstdc++6 (>= 4.4.0), python-minimal, ca-certificates',
+                        'Description': ' Node.js event-based server-side javascript engine\n',
                         'Filename': 'nodejs_10.24.1-1nodesource1_amd64.deb',
                         'FilesHash': '1f74a6abf6acc572',
                         'Homepage': 'https://nodejs.org',
@@ -197,7 +241,7 @@ class MirrorsAPISectionTests(TestCase):
                         'SHA1': 'a3bc5a29614eab366bb3644abb1e602b5c8953d5',
                         'SHA256': '4b374d16b536cf1a3963ddc4575ed2b68b28b0b5ea6eefe93c942dfc0ed35177',
                         'SHA512': 'bf203bb319de0c5f7ed3b6ba69de39b1ea8b5086b872561379bd462dd93f0796'
-                                  '9ca64fa01ade01ff08fa13a4e5e28625b59292ba44bc01ba876ec95875630460',
+                        '9ca64fa01ade01ff08fa13a4e5e28625b59292ba44bc01ba876ec95875630460',
                         'Section': 'web',
                         'ShortKey': 'Pamd64 nodejs 10.24.1-1nodesource1',
                         'Size': '15949164',
