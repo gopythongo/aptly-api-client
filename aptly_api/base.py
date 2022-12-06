@@ -108,7 +108,7 @@ class BaseAPIClient:
 
         return resp
 
-    def do_put(self, urlpath: str, data: Union[bytes, MutableMapping[str, str], IO[Any]] = None,
+    def do_put(self, urlpath: str, data: Union[bytes, MutableMapping[str, str], IO[Any], None] = None,
                files: _filetype = None,
                json: Optional[MutableMapping[Any, Any]] = None) -> requests.Response:
         resp = requests.put(self._make_url(urlpath), data=data, files=files, json=json,
