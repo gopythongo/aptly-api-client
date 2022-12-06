@@ -16,7 +16,7 @@ from aptly_api.parts.mirrors import MirrorsAPISection, Mirror
 class MirrorsAPISectionTests(TestCase):
     def __init__(self, *args: Any) -> None:
         super().__init__(*args)
-        self.mapi = MirrorsAPISection("http://test/")
+        self.miapi = MirrorsAPISection("http://test/")
 
     def test_create(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/mirrors",
@@ -25,25 +25,25 @@ class MirrorsAPISectionTests(TestCase):
                    "ArchiveRoot": "https://deb.nodesource.com/node_10.x/",
                    "Distribution": "bionic", "Components": ["main"],
                    "Architectures": ["amd64"],
-                   "Meta": {"Architectures": "i386 amd64 armhf arm64",
+                   "Meta": [{"Architectures": "i386 amd64 armhf arm64",
                    "Codename": "bionic", "Components": "main",
                    "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
                    "Description": " Apt Repository for the Node.JS 10.x Branch",
-                   "Label": "Node Source", "Origin": "Node Source"},
+                   "Label": "Node Source", "Origin": "Node Source"}],
                    "LastDownloadDate": "0001-01-01T00:00:00Z",
                    "Filter": "test", "Status": 0, "WorkerPID": 0,
                    "FilterWithDeps": true, "SkipComponentCheck": true,
                    "SkipArchitectureCheck": true, "DownloadSources": true,
                    "DownloadUdebs": true, "DownloadInstaller": true}"""
                    )
-        self.assertEqual(
-            self.mapi.create(name="aptly-mirror", archiveurl='https://deb.nodesource.com/node_10.x/',
-                             distribution='bionic', components=["main"],
-                             architectures=["amd64"],
-                             filter="test", download_udebs=True,
-                             download_sources=True, download_installer=True,
-                             skip_component_check=True, filter_with_deps=True,
-                             keyrings="/path/to/keyring", ignore_signatures=True),
+        self.assertSequenceEqual(
+            self.miapi.create(name="aptly-mirror", archiveurl='https://deb.nodesource.com/node_10.x/',
+                              distribution='bionic', components=["main"],
+                              architectures=["amd64"],
+                              filter="test", download_udebs=True,
+                              download_sources=True, download_installer=True,
+                              skip_component_check=True, filter_with_deps=True,
+                              keyrings=["/path/to/keyring"], ignore_signatures=True),
             Mirror(
                 uuid='2cb5985a-a23f-4a1f-8eb6-d5409193b4eb',
                 name="aptly-mirror",
@@ -52,12 +52,12 @@ class MirrorsAPISectionTests(TestCase):
                 components=["main"],
                 architectures=["amd64"],
                 downloaddate='0001-01-01T00:00:00Z',
-                meta={"Architectures": "i386 amd64 armhf arm64",
+                meta=[{"Architectures": "i386 amd64 armhf arm64",
                       "Codename": "bionic",
-                      "Components": "main",
-                      "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
-                      "Description": " Apt Repository for the Node.JS 10.x Branch",
-                      "Label": "Node Source", "Origin": "Node Source"},
+                       "Components": "main",
+                       "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
+                       "Description": " Apt Repository for the Node.JS 10.x Branch",
+                       "Label": "Node Source", "Origin": "Node Source"}],
                 filter="test",
                 status=0,
                 worker_pid=0,
@@ -78,11 +78,11 @@ class MirrorsAPISectionTests(TestCase):
                   "ArchiveRoot": "https://deb.nodesource.com/node_10.x/",
                   "Distribution": "bionic", "Components": ["main"],
                   "Architectures": ["amd64"],
-                  "Meta": {"Architectures": "i386 amd64 armhf arm64",
+                  "Meta": [{"Architectures": "i386 amd64 armhf arm64",
                   "Codename": "bionic", "Components": "main",
                   "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
                   "Description": " Apt Repository for the Node.JS 10.x Branch",
-                  "Label": "Node Source", "Origin": "Node Source"},
+                  "Label": "Node Source", "Origin": "Node Source"}],
                   "LastDownloadDate": "0001-01-01T00:00:00Z", "Filter": "",
                   "Status": 0, "WorkerPID": 0, "FilterWithDeps": false,
                   "SkipComponentCheck": false, "SkipArchitectureCheck": false,
@@ -90,7 +90,7 @@ class MirrorsAPISectionTests(TestCase):
                   "DownloadInstaller": false}]"""
                   )
         self.assertSequenceEqual(
-            self.mapi.list(),
+            self.miapi.list(),
             [
                 Mirror(
                     uuid='2cb5985a-a23f-4a1f-8eb6-d5409193b4eb',
@@ -100,12 +100,12 @@ class MirrorsAPISectionTests(TestCase):
                     components=["main"],
                     architectures=["amd64"],
                     downloaddate='0001-01-01T00:00:00Z',
-                    meta={"Architectures": "i386 amd64 armhf arm64",
+                    meta=[{"Architectures": "i386 amd64 armhf arm64",
                           "Codename": "bionic",
-                          "Components": "main",
-                          "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
-                          "Description": " Apt Repository for the Node.JS 10.x Branch",
-                          "Label": "Node Source", "Origin": "Node Source"},
+                           "Components": "main",
+                           "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
+                           "Description": " Apt Repository for the Node.JS 10.x Branch",
+                           "Label": "Node Source", "Origin": "Node Source"}],
                     filter="",
                     status=0,
                     worker_pid=0,
@@ -127,19 +127,19 @@ class MirrorsAPISectionTests(TestCase):
                   "ArchiveRoot": "https://deb.nodesource.com/node_10.x/",
                   "Distribution": "bionic", "Components": ["main"],
                   "Architectures": ["amd64"],
-                  "Meta": {"Architectures": "i386 amd64 armhf arm64",
+                  "Meta": [{"Architectures": "i386 amd64 armhf arm64",
                   "Codename": "bionic", "Components": "main",
                   "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
                   "Description": " Apt Repository for the Node.JS 10.x Branch",
-                  "Label": "Node Source", "Origin": "Node Source"},
+                  "Label": "Node Source", "Origin": "Node Source"}],
                   "LastDownloadDate": "0001-01-01T00:00:00Z", "Filter": "",
                   "Status": 0, "WorkerPID": 0, "FilterWithDeps": false,
                   "SkipComponentCheck": false, "SkipArchitectureCheck": false,
                   "DownloadSources": false, "DownloadUdebs": false,
                   "DownloadInstaller": false}"""
                   )
-        self.assertEqual(
-            self.mapi.show(name="aptly-mirror"),
+        self.assertSequenceEqual(
+            self.miapi.show(name="aptly-mirror"),
             Mirror(
                 uuid='2cb5985a-a23f-4a1f-8eb6-d5409193b4eb',
                 name="aptly-mirror",
@@ -148,12 +148,12 @@ class MirrorsAPISectionTests(TestCase):
                 components=["main"],
                 architectures=["amd64"],
                 downloaddate='0001-01-01T00:00:00Z',
-                meta={"Architectures": "i386 amd64 armhf arm64",
+                meta=[{"Architectures": "i386 amd64 armhf arm64",
                       "Codename": "bionic",
-                      "Components": "main",
-                      "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
-                      "Description": " Apt Repository for the Node.JS 10.x Branch",
-                      "Label": "Node Source", "Origin": "Node Source"},
+                       "Components": "main",
+                       "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
+                       "Description": " Apt Repository for the Node.JS 10.x Branch",
+                       "Label": "Node Source", "Origin": "Node Source"}],
                 filter="",
                 status=0,
                 worker_pid=0,
@@ -171,7 +171,7 @@ class MirrorsAPISectionTests(TestCase):
         rmock.get("http://test/api/mirrors/aptly-mirror/packages",
                   text='["Pamd64 nodejs 10.24.1-1nodesource1 1f74a6abf6acc572"]')
         self.assertSequenceEqual(
-            self.mapi.list_packages(
+            self.miapi.list_packages(
                 name="aptly-mirror", query=("nodejs"), with_deps=True),
             [
                 Package(
@@ -213,8 +213,8 @@ class MirrorsAPISectionTests(TestCase):
                       "Version":"10.24.1-1nodesource1"
                  }]"""
         )
-        self.assertEqual(
-            self.mapi.list_packages(
+        self.assertSequenceEqual(
+            self.miapi.list_packages(
                 "aptly-mirror", detailed=True, with_deps=True, query="nodejs"),
             [
                 Package(
@@ -253,32 +253,32 @@ class MirrorsAPISectionTests(TestCase):
 
     def test_delete(self, *, rmock: requests_mock.Mocker) -> None:
         with self.assertRaises(requests_mock.NoMockAddress):
-            self.mapi.delete(name="aptly-mirror")
+            self.miapi.delete(name="aptly-mirror")
 
     def test_update(self, *, rmock: requests_mock.Mocker) -> None:
         with self.assertRaises(requests_mock.NoMockAddress):
-            self.mapi.update(name="aptly-mirror", ignore_signatures=True)
+            self.miapi.update(name="aptly-mirror", ignore_signatures=True)
 
     def test_edit(self, *, rmock: requests_mock.Mocker) -> None:
         with self.assertRaises(requests_mock.NoMockAddress):
-            self.mapi.edit(name="aptly-mirror", newname="aptly-mirror-renamed",
-                           archiveurl='https://deb.nodesource.com/node_10.x/',
-                           architectures=["i386", "amd64"], filter="test",
-                           components=["main"], keyrings="/path/to/keyring",
-                           skip_existing_packages=True, ignore_checksums=True,
-                           download_udebs=True, download_sources=True,
-                           skip_component_check=True, filter_with_deps=True,
-                           ignore_signatures=True, force_update=True),
+            self.miapi.edit(name="aptly-mirror", newname="aptly-mirror-renamed",
+                            archiveurl='https://deb.nodesource.com/node_10.x/',
+                            architectures=["i386", "amd64"], filter="test",
+                            components=["main"], keyrings=["/path/to/keyring"],
+                            skip_existing_packages=True, ignore_checksums=True,
+                            download_udebs=True, download_sources=True,
+                            skip_component_check=True, filter_with_deps=True,
+                            ignore_signatures=True, force_update=True)
 
     def test_delete_validation(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.delete("http://test/api/mirrors/aptly-mirror")
-        self.mapi.delete(name="aptly-mirror")
+        self.miapi.delete(name="aptly-mirror")
 
     def test_update_validation(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.put("http://test/api/mirrors/aptly-mirror")
-        self.mapi.update(name="aptly-mirror")
+        self.miapi.update(name="aptly-mirror")
 
     def test_edit_validation(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.put("http://test/api/mirrors/aptly-mirror",
                   text='{"Name":"aptly-mirror-bla", "IgnoreSignatures": true}')
-        self.mapi.edit(name="aptly-mirror", newname="aptly-mirror-renamed")
+        self.miapi.edit(name="aptly-mirror", newname="aptly-mirror-renamed")
