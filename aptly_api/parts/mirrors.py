@@ -3,7 +3,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from typing import NamedTuple, Sequence, Dict, cast, Optional, List
+from typing import NamedTuple, Sequence, Dict, cast, Optional, List, Union
 from urllib.parse import quote
 
 from aptly_api.base import BaseAPIClient
@@ -11,17 +11,17 @@ from aptly_api.parts.packages import Package, PackageAPISection
 
 
 Mirror = NamedTuple('Mirror', [
-    ('uuid', str),
+    ('uuid', Optional[str]),
     ('name', str),
     ('archiveurl', str),
-    ('distribution', str),
-    ('components', Sequence[str]),
-    ('architectures', Sequence[str]),
-    ('meta', Sequence[Dict[str, str]]),
-    ('downloaddate', str),
-    ('filter', str),
-    ('status', int),
-    ('worker_pid', int),
+    ('distribution', Optional[str]),
+    ('components', Optional[Sequence[str]]),
+    ('architectures', Optional[Sequence[str]]),
+    ('meta', Optional[Sequence[Dict[str, str]]]),
+    ('downloaddate', Optional[str]),
+    ('filter', Optional[str]),
+    ('status', Optional[int]),
+    ('worker_pid', Optional[int]),
     ('filter_with_deps', bool),
     ('skip_component_check', bool),
     ('skip_architecture_check', bool),
@@ -29,6 +29,9 @@ Mirror = NamedTuple('Mirror', [
     ('download_udebs', bool),
     ('download_installer', bool)
 ])
+
+T_BodyDict = Dict[str, Union[str, bool, Sequence[Dict[str, str]],
+                             Sequence[str], Dict[str, Union[bool, str]]]]
 
 
 class MirrorsAPISection(BaseAPIClient):
@@ -79,12 +82,11 @@ class MirrorsAPISection(BaseAPIClient):
             )
         return mirrors
 
-    def update(self, name: str, ignore_signatures: bool = False) -> Sequence[Mirror]:
+    def update(self, name: str, ignore_signatures: bool = False) -> None:
         body = {}
         if ignore_signatures:
             body["IgnoreSignatures"] = ignore_signatures
-        resp = self.do_put("api/mirrors/%s" % (quote(name)), json=body)
-        return resp
+        self.do_put("api/mirrors/%s" % (quote(name)), json=body)
 
     def edit(self, name: str, newname: Optional[str] = None, archiveurl: Optional[str] = None,
              filter: Optional[str] = None, architectures: Optional[List[str]] = None,
@@ -92,9 +94,9 @@ class MirrorsAPISection(BaseAPIClient):
              filter_with_deps: bool = False, skip_existing_packages: bool = False,
              download_sources: bool = False, download_udebs: bool = False,
              skip_component_check: bool = False, ignore_checksums: bool = False,
-             ignore_signatures: bool = False, force_update: bool = False) -> Mirror:
+             ignore_signatures: bool = False, force_update: bool = False) -> None:
 
-        body = {}
+        body = {}  # type: T_BodyDict
         if newname:
             body["Name"] = newname
         if archiveurl:
@@ -124,8 +126,7 @@ class MirrorsAPISection(BaseAPIClient):
         if force_update:
             body["ForceUpdate"] = force_update
 
-        resp = self.do_put("api/mirrors/%s" % (quote(name)), json=body)
-        return resp
+        self.do_put("api/mirrors/%s" % (quote(name)), json=body)
 
     def show(self, name: str) -> Mirror:
         resp = self.do_get("api/mirrors/%s" % (quote(name)))
@@ -149,9 +150,8 @@ class MirrorsAPISection(BaseAPIClient):
             ret.append(PackageAPISection.package_from_response(rpkg))
         return ret
 
-    def delete(self, name: str) -> Sequence[Mirror]:
-        resp = self.do_delete("api/mirrors/%s" % quote(name))
-        return resp
+    def delete(self, name: str) -> None:
+        self.do_delete("api/mirrors/%s" % quote(name))
 
     def create(self, name: str, archiveurl: str, distribution: Optional[str] = None,
                filter: Optional[str] = None, components: Optional[List[str]] = None,
@@ -162,7 +162,7 @@ class MirrorsAPISection(BaseAPIClient):
         data = {
             "Name": name,
             "ArchiveURL": archiveurl
-        }
+        }  # type: T_BodyDict
 
         if ignore_signatures:
             data["IgnoreSignatures"] = ignore_signatures
