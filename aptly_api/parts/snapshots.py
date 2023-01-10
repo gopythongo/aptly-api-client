@@ -49,8 +49,7 @@ class SnapshotAPISection(BaseAPIClient):
         if description is not None:
             body["Description"] = description
 
-        resp = self.do_post("api/repos/%s/snapshots" %
-                            quote(reponame), json=body)
+        resp = self.do_post("api/repos/%s/snapshots" % quote(reponame), json=body)
         return self.snapshot_from_response(resp.json())
 
     def create_from_mirror(self, mirrorname: str, snapshotname: str, description: Optional[str] = None) -> Snapshot:
