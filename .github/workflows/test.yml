@@ -25,15 +25,7 @@ jobs:
               run: pipx install hatch
             - name: Run Tests
               run: |
-                  hatch test
-            - name: Check Coverage
-              run: |
                   hatch test --cover
-            - name: Run Coveralls
-              uses: coverallsapp/github-action@main
-              with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  path-to-lcov: coverage.lcov
             - name: Run Flake8
               run: |
                   hatch run flake8 --max-line-length=120 aptly_api
