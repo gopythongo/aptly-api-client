@@ -26,6 +26,8 @@ jobs:
             - name: Run Tests
               run: |
                   hatch test
+            - name: Check Coverage
+              run: |
                   hatch run coverage report -m
                   hatch run coverage lcov
             - name: Run Coveralls
