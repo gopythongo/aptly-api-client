@@ -28,8 +28,7 @@ jobs:
                   hatch test
             - name: Check Coverage
               run: |
-                  hatch run coverage report -m
-                  hatch run coverage lcov
+                  hatch test --cover
             - name: Run Coveralls
               uses: coverallsapp/github-action@main
               with:
