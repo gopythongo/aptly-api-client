@@ -28,9 +28,9 @@ jobs:
                   hatch test --cover
             - name: Run Flake8
               run: |
-                  hatch run flake8 --max-line-length=120 aptly_api
+                  hatch run test:flake8 --max-line-length=120 aptly_api
             - name: Run mypy
               run: |
-                  hatch run mypy --install-types --non-interactive \
+                  hatch run test:mypy --install-types --non-interactive \
                        --ignore-missing-imports --follow-imports=skip --disallow-untyped-calls \
                        --disallow-untyped-defs -p aptly_api
