@@ -24,7 +24,7 @@ jobs:
                   hatch test --all --cover
             - name: Lint
               run: |
-                  hatch fmt -l
+                  hatch fmt --linter --check
             - name: Static Type Checking
               run: |
                   hatch run mypy:type-check

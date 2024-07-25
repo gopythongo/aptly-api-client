@@ -87,6 +87,9 @@ ignore = [
     "PLR2004",
     "B007",
     "SIM115",
+    "UP009",
+    "UP014",
+    "I001",
 ]
 
 [tool.hatch.envs.mypy]
