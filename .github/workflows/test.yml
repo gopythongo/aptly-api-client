@@ -28,7 +28,7 @@ jobs:
                   hatch test --cover
             - name: Run Flake8
               run: |
-                  hatch run test:flake8 --max-line-length=120 aptly_api
-            - name: Run mypy
+                  hatch fmt -l
+            - name: Static Type Checking
               run: |
                   hatch run mypy:type-check

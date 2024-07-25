@@ -43,9 +43,6 @@ packages = [
 default-args = []
 dependencies = [
     "requests-mock==1.12.1",
-    "coverage==7.6.0",
-    "coveralls==4.0.1",
-    "flake8==7.1.0",
     "pep257==0.7.0",
     "doc8==1.1.1",
     "Pygments==2.18.0",
@@ -62,6 +59,34 @@ pythonpath = [
 ]
 testpaths = [
     "aptly_api/tests/",
+]
+
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+ignore = [
+    "PT009",
+    "PT027",
+    "ARG002",
+    "SLF001",
+    "UP031",
+    "FA100",
+    "FBT001",
+    "FBT002",
+    "PERF401",
+    "EM101",
+    "TRY003",
+    "TRY302",
+    "A002",
+    "RET505",
+    "PLC0414",
+    "N818",
+    "SIM108",
+    "PLR2004",
+    "B007",
+    "SIM115",
 ]
 
 [tool.hatch.envs.mypy]
