@@ -96,6 +96,12 @@ class ClientTests(TestCase):
             self.client.files.do_get("mock://test/api")
 
     @requests_mock.Mocker(kw='rmock')
+    def test_error_get_api_ready_503_code(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.register_uri("GET", "mock://test/api/ready", status_code=503, text='{"Status":"Aptly is unavailable"}')
+        self.assertEqual(self.client.files.do_get("mock://test/api/ready").status_code, 503)
+        self.assertEqual(self.client.files.do_get("mock://test/api/ready").json()["Status"], "Aptly is unavailable")
+
+    @requests_mock.Mocker(kw='rmock')
     def test_error_post(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.register_uri("POST", "mock://test/api", status_code=400, text='[{"error": "error", "meta": "meta"}]',
                            reason="test")
