@@ -31,6 +31,4 @@ jobs:
                   hatch run test:flake8 --max-line-length=120 aptly_api
             - name: Run mypy
               run: |
-                  hatch run test:mypy --install-types --non-interactive \
-                       --ignore-missing-imports --follow-imports=skip --disallow-untyped-calls \
-                       --disallow-untyped-defs -p aptly_api
+                  hatch run mypy:type-check
