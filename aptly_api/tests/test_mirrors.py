@@ -5,6 +5,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from typing import Any
 from unittest.case import TestCase
+from inspect import signature
+import json
 
 import requests_mock
 
@@ -19,39 +21,93 @@ class MirrorsAPISectionTests(TestCase):
         self.miapi = MirrorsAPISection("http://test/")
 
     def test_create(self, *, rmock: requests_mock.Mocker) -> None:
-        rmock.post("http://test/api/mirrors",
-                   text="""{"UUID": "2cb5985a-a23f-4a1f-8eb6-d5409193b4eb",
-                        "Name": "aptly-mirror",
-                        "ArchiveRoot": "https://deb.nodesource.com/node_10.x/",
-                        "Distribution": "bionic", "Components": ["main"],
-                        "Architectures": ["amd64"],
-                        "Meta": [{"Architectures": "i386 amd64 armhf arm64",
-                        "Codename": "bionic", "Components": "main",
-                        "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
-                        "Description": " Apt Repository for the Node.JS 10.x Branch",
-                        "Label": "Node Source", "Origin": "Node Source"}],
-                        "LastDownloadDate": "0001-01-01T00:00:00Z",
-                        "Filter": "test", "Status": 0, "WorkerPID": 0,
-                        "FilterWithDeps": true, "SkipComponentCheck": true,
-                        "SkipArchitectureCheck": true, "DownloadSources": true,
-                        "DownloadUdebs": true, "DownloadInstaller": true}""")
+        expected = {"Name": "testname", "ArchiveURL": "http://randomurl.url"}
+
+        rmock.post("http://test/api/mirrors", text="""{"Name":"nocheck", "ArchiveRoot":"nocheck"}""")
+        self.miapi.create(expected["Name"], expected["ArchiveURL"])
+
+        self.assertEqual(rmock.request_history[0].method, "POST")
+        self.assertEqual(len(rmock.request_history[0].json()), len(expected))
+        self.assertEqual(rmock.request_history[0].json(), expected)
+
+    def test_create_all_args(self, *, rmock: requests_mock.Mocker) -> None:
+        expected = {
+            "Name": "aptly-mirror",
+            "ArchiveURL": "https://deb.nodesource.com/node_10.x/",
+            "Distribution": "bionic",
+            "Filter": "test",
+            "Components": ["main"],
+            "Architectures": ["amd64"],
+            "Keyrings": ["/path/to/keyring"],
+            "DownloadSources": True,
+            "DownloadUdebs": True,
+            "DownloadInstaller": True,
+            "FilterWithDeps": True,
+            "SkipComponentCheck": True,
+            "SkipArchitectureCheck": True,
+            "IgnoreSignatures": True,
+        }
+        # Keep us from getting out of lockstep with the number of args to create
+        self.assertEqual(len(signature(self.miapi.create).parameters), len(expected))
+
+        rmock.post("http://test/api/mirrors", text="""{"Name":"nocheck", "ArchiveRoot":"nocheck"}""")
+        self.miapi.create(
+            name="aptly-mirror",
+            archiveurl="https://deb.nodesource.com/node_10.x/",
+            distribution="bionic",
+            filter="test",
+            components=["main"],
+            architectures=["amd64"],
+            keyrings=["/path/to/keyring"],
+            download_sources=True,
+            download_udebs=True,
+            download_installer=True,
+            filter_with_deps=True,
+            skip_component_check=True,
+            skip_architecture_check=True,
+            ignore_signatures=True,
+        )
+
+        self.assertEqual(rmock.request_history[0].method, "POST")
+        self.assertEqual(len(rmock.request_history[0].json()), len(expected))
+        self.assertEqual(rmock.request_history[0].json(), expected)
+
+    def test_mirror_from_response(self, *, rmock: requests_mock.Mocker) -> None:
         self.assertSequenceEqual(
-            self.miapi.create(
-                name="aptly-mirror", archiveurl='https://deb.nodesource.com/node_10.x/',
-                distribution='bionic', components=["main"],
-                architectures=["amd64"],
-                filter="test", download_udebs=True,
-                download_sources=True, download_installer=True,
-                skip_component_check=True, filter_with_deps=True,
-                keyrings=["/path/to/keyring"], ignore_signatures=True
+            self.miapi.mirror_from_response(
+                json.loads("""{
+                    "UUID": "2cb5985a-a23f-4a1f-8eb6-d5409193b4eb",
+                    "Name": "aptly-mirror",
+                    "ArchiveRoot": "https://deb.nodesource.com/node_10.x/",
+                    "Distribution": "bionic",
+                    "Components": ["main"],
+                    "Architectures": ["amd64"],
+                    "LastDownloadDate": "0001-01-01T00:00:00Z",
+                    "Meta": [{"Architectures": "i386 amd64 armhf arm64",
+                            "Codename": "bionic",
+                            "Components": "main",
+                            "Date": "Tue, 06 Apr 2021 21:05:41 UTC",
+                            "Description": " Apt Repository for the Node.JS 10.x Branch",
+                            "Label": "Node Source",
+                            "Origin": "Node Source"}],
+                    "Filter": "test",
+                    "Status": 0,
+                    "WorkerPID": 0,
+                    "FilterWithDeps": true,
+                    "SkipComponentCheck": true,
+                    "SkipArchitectureCheck": true,
+                    "DownloadSources": true,
+                    "DownloadUdebs": true,
+                    "DownloadInstaller": true
+                }""")
             ),
             Mirror(
                 uuid='2cb5985a-a23f-4a1f-8eb6-d5409193b4eb',
                 name="aptly-mirror",
                 archiveurl="https://deb.nodesource.com/node_10.x/",
                 distribution='bionic',
-                components=["main"],
-                architectures=["amd64"],
+                components=['main'],
+                architectures=['amd64'],
                 downloaddate='0001-01-01T00:00:00Z',
                 meta=[{"Architectures": "i386 amd64 armhf arm64",
                       "Codename": "bionic",

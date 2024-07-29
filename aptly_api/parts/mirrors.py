@@ -39,21 +39,22 @@ class MirrorsAPISection(BaseAPIClient):
     def mirror_from_response(api_response: Dict[str, str]) -> Mirror:
         return Mirror(
             uuid=cast(str, api_response["UUID"]) if "UUID" in api_response else None,
-            name=cast(str, api_response["Name"]), archiveurl=cast(str, api_response["ArchiveRoot"]),
+            name=cast(str, api_response["Name"]),
+            archiveurl=cast(str, api_response["ArchiveRoot"]),
             distribution=cast(str, api_response["Distribution"]) if "Distribution" in api_response else None,
-            components=cast(List[str], api_response["Components"])if "Components" in api_response else None,
+            components=cast(List[str], api_response["Components"]) if "Components" in api_response else None,
             architectures=cast(List[str], api_response["Architectures"]) if "Architectures" in api_response else None,
             meta=cast(List[Dict[str, str]], api_response["Meta"]) if "Meta" in api_response else None,
             downloaddate=cast(str, api_response["LastDownloadDate"]) if "LastDownloadDate" in api_response else None,
             filter=cast(str, api_response["Filter"]) if "Filter" in api_response else None,
-            status=cast(int, api_response["Status"])if "Status" in api_response else None,
-            worker_pid=cast(int, api_response["WorkerPID"]) if "WorkerPID" in api_response else None,
-            filter_with_deps=cast(bool, api_response["FilterWithDeps"]),
-            skip_component_check=cast(bool, api_response["SkipComponentCheck"]),
-            skip_architecture_check=cast(bool, api_response["SkipArchitectureCheck"]),
-            download_sources=cast(bool, api_response["DownloadSources"]),
-            download_udebs=cast(bool, api_response["DownloadUdebs"]),
-            download_installer=cast(bool, api_response["DownloadInstaller"])
+            status=cast(int, api_response["Status"]) if "Status" in api_response else None,
+            worker_pid=cast( int, api_response["WorkerPID"]) if "WorkerPID" in api_response else None,
+            filter_with_deps=cast(bool, api_response["FilterWithDeps"]) if "FilterWithDeps" in api_response else False,
+            skip_component_check=cast(bool, api_response["SkipComponentCheck"]) if "SkipComponentCheck" in api_response else False,
+            skip_architecture_check=cast(bool, api_response["SkipArchitectureCheck"]) if "SkipArchitectureCheck" in api_response else False,
+            download_sources=cast(bool, api_response["DownloadSources"]) if "DownloadSources" in api_response else False,
+            download_udebs=cast(bool, api_response["DownloadUdebs"]) if "DownloadUdebs" in api_response else False,
+            download_installer=cast(bool, api_response["DownloadInstaller"]) if "DownloadInstaller" in api_response else False,
         )
 
     def list(self) -> Sequence[Mirror]:
@@ -139,32 +140,37 @@ class MirrorsAPISection(BaseAPIClient):
                architectures: Optional[List[str]] = None, keyrings: Optional[List[str]] = None,
                download_sources: bool = False, download_udebs: bool = False,
                download_installer: bool = False, filter_with_deps: bool = False,
-               skip_component_check: bool = False, ignore_signatures: bool = False) -> Mirror:
+               skip_component_check: bool = False, skip_architecture_check: bool = False,
+               ignore_signatures: bool = False) -> Mirror:
         data = {
             "Name": name,
             "ArchiveURL": archiveurl
         }  # type: T_BodyDict
 
-        if ignore_signatures:
-            data["IgnoreSignatures"] = ignore_signatures
-        if keyrings:
-            data["Keyrings"] = keyrings
-        if filter:
-            data["Filter"] = filter
         if distribution:
             data["Distribution"] = distribution
+        if filter:
+            data["Filter"] = filter
         if components:
             data["Components"] = components
         if architectures:
             data["Architectures"] = architectures
+        if keyrings:
+            data["Keyrings"] = keyrings
         if download_sources:
             data["DownloadSources"] = download_sources
         if download_udebs:
             data["DownloadUdebs"] = download_udebs
         if download_installer:
             data["DownloadInstaller"] = download_installer
+        if filter_with_deps:
+            data["FilterWithDeps"] = filter_with_deps
         if skip_component_check:
             data["SkipComponentCheck"] = skip_component_check
+        if skip_architecture_check:
+            data["SkipArchitectureCheck"] = skip_architecture_check
+        if ignore_signatures:
+            data["IgnoreSignatures"] = ignore_signatures
 
         resp = self.do_post("api/mirrors", json=data)
 
