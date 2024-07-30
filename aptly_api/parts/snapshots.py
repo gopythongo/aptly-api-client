@@ -56,6 +56,9 @@ class SnapshotAPISection(BaseAPIClient):
         body = {
             "Name": snapshotname
         }
+        if description is not None:
+            body["Description"] = description
+
         resp = self.do_post("api/mirrors/%s/snapshots" %
                             quote(mirrorname), json=body)
         return self.snapshot_from_response(resp.json())

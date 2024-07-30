@@ -207,6 +207,7 @@ class SnapshotAPISectionTests(TestCase):
         )
 
     def test_create_from_mirror(self, *, rmock: requests_mock.Mocker) -> None:
+        expected = {'Name': 'aptly-mirror-snap', 'Description': 'Snapshot from local repo [aptly-repo]'}
         rmock.post("http://test/api/mirrors/aptly-mirror/snapshots",
                    text='{"Name":"aptly-mirror-snap","CreatedAt":"2022-11-29T21:43:45.275605639Z",'
                         '"Description":"Snapshot from local mirror [aptly-mirror]"}')
@@ -219,3 +220,4 @@ class SnapshotAPISectionTests(TestCase):
                 created_at=iso8601.parse_date('2022-11-29T21:43:45.275605639Z')
             )
         )
+        self.assertEqual(rmock.request_history[0].json(), expected)
