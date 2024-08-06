@@ -19,12 +19,20 @@ class MiscAPISection(BaseAPIClient):
         else:
             raise AptlyAPIException("Aptly server didn't return a valid response object:\n%s" % resp.text)
 
-    def healthy(self) -> str:
+    def _do_get_healthy_clear_404(self) -> requests.Response:
         try:
-            resp = self.do_get("api/healthy")
-            if "Status" in resp.json():
-                return cast(str, resp.json()["Status"])
-            else:
-                raise AptlyAPIException("Aptly server didn't return a valid response object:\n%s" % resp.text)
-        except ValueError as error:
-            raise NotImplementedError("The Healthy Api is not yet supported") from error
+            return self.do_get("api/healthy")
+        except AptlyAPIException as error:
+            if error.status_code == HTTP_CODE_404:
+                msg = "The Healthy API is not yet supported"
+                raise NotImplementedError(msg) from error
+            raise
+
+    def healthy(self) -> str:
+        resp = self._do_get_healthy_clear_404()
+
+        if "Status" not in resp.json():
+            msg = f"Aptly server didn't return a valid response object:\n{resp.text}"
+            raise AptlyAPIException(msg)
+
+        return cast(str, resp.json()["Status"])
