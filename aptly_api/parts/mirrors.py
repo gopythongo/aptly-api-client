@@ -38,35 +38,19 @@ class MirrorsAPISection(BaseAPIClient):
     @staticmethod
     def mirror_from_response(api_response: Dict[str, str]) -> Mirror:
         return Mirror(
-            uuid=cast(str, api_response["UUID"]
-                      ) if "UUID" in api_response else None,
-            name=cast(str, api_response["Name"]),
-            archiveurl=cast(
-                str, api_response["ArchiveRoot"]),
-            distribution=cast(
-                str, api_response["Distribution"])
-            if "Distribution" in api_response else None,
-            components=cast(List[str], api_response["Components"]
-                            )if "Components" in api_response else None,
-            architectures=cast(List[str], api_response["Architectures"]
-                               ) if "Architectures" in api_response else None,
-            meta=cast(List[Dict[str, str]], api_response["Meta"]
-                      ) if "Meta" in api_response else None,
-            downloaddate=cast(
-                str, api_response["LastDownloadDate"])
-            if "LastDownloadDate" in api_response else None,
-            filter=cast(str, api_response["Filter"]
-                        ) if "Filter" in api_response else None,
-            status=cast(int, api_response["Status"]
-                        )if "Status" in api_response else None,
-            worker_pid=cast(
-                int, api_response["WorkerPID"])
-            if "WorkerPID" in api_response else None,
+            uuid=cast(str, api_response["UUID"]) if "UUID" in api_response else None,
+            name=cast(str, api_response["Name"]), archiveurl=cast(str, api_response["ArchiveRoot"]),
+            distribution=cast(str, api_response["Distribution"]) if "Distribution" in api_response else None,
+            components=cast(List[str], api_response["Components"])if "Components" in api_response else None,
+            architectures=cast(List[str], api_response["Architectures"]) if "Architectures" in api_response else None,
+            meta=cast(List[Dict[str, str]], api_response["Meta"]) if "Meta" in api_response else None,
+            downloaddate=cast(str, api_response["LastDownloadDate"]) if "LastDownloadDate" in api_response else None,
+            filter=cast(str, api_response["Filter"]) if "Filter" in api_response else None,
+            status=cast(int, api_response["Status"])if "Status" in api_response else None,
+            worker_pid=cast(int, api_response["WorkerPID"]) if "WorkerPID" in api_response else None,
             filter_with_deps=cast(bool, api_response["FilterWithDeps"]),
-            skip_component_check=cast(
-                bool, api_response["SkipComponentCheck"]),
-            skip_architecture_check=cast(
-                bool, api_response["SkipArchitectureCheck"]),
+            skip_component_check=cast(bool, api_response["SkipComponentCheck"]),
+            skip_architecture_check=cast(bool, api_response["SkipArchitectureCheck"]),
             download_sources=cast(bool, api_response["DownloadSources"]),
             download_udebs=cast(bool, api_response["DownloadUdebs"]),
             download_installer=cast(bool, api_response["DownloadInstaller"])
@@ -77,9 +61,7 @@ class MirrorsAPISection(BaseAPIClient):
 
         mirrors = []
         for mirr in resp.json():
-            mirrors.append(
-                self.mirror_from_response(mirr)
-            )
+            mirrors.append(self.mirror_from_response(mirr))
         return mirrors
 
     def update(self, name: str, ignore_signatures: bool = False) -> None:
@@ -130,7 +112,6 @@ class MirrorsAPISection(BaseAPIClient):
 
     def show(self, name: str) -> Mirror:
         resp = self.do_get("api/mirrors/%s" % (quote(name)))
-
         return self.mirror_from_response(resp.json())
 
     def list_packages(self, name: str, query: Optional[str] = None, with_deps: bool = False,
