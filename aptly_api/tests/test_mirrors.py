@@ -185,8 +185,8 @@ class MirrorsAPISectionTests(TestCase):
         rmock.get(
             "http://test/api/mirrors/aptly-mirror/packages?format=details",
             text='[{"Architecture":"amd64",'
-                 '"Conflicts": "nodejs-dev, nodejs-legacy, npm",'
-                 '"Depends":"1libc6 (>= 2.9), libgcc1 (>= 1:3.4),'
+                 '"Conflicts":"nodejs-dev, nodejs-legacy, npm",'
+                 '"Depends":"1libc6 (>= 2.9), libgcc1 (>= 1:3.4), '
                  'libstdc++6 (>= 4.4.0), python-minimal, ca-certificates",'
                  '"Description":" Node.js event-based server-side javascript engine\\n",'
                  '"Filename":"nodejs_10.24.1-1nodesource1_amd64.deb",'
@@ -205,7 +205,7 @@ class MirrorsAPISectionTests(TestCase):
                  '"Section":"web",'
                  '"ShortKey":"Pamd64 nodejs 10.24.1-1nodesource1",'
                  '"Size":"15949164",'
-                 'Version":"10.24.1-1nodesource1"}]')
+                 '"Version":"10.24.1-1nodesource1"}]')
         self.assertSequenceEqual(
             self.miapi.list_packages(
                 "aptly-mirror", detailed=True, with_deps=True, query="nodejs"),
