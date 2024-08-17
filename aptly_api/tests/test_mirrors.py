@@ -192,7 +192,7 @@ class MirrorsAPISectionTests(TestCase):
                  '"Filename":"nodejs_10.24.1-1nodesource1_amd64.deb",'
                  '"FilesHash":"1f74a6abf6acc572",'
                  '"Homepage":"https://nodejs.org",'
-                 '"Installed-Size":"78630", "Key":"Pamd64 nodejs 10.24.1-1nodesource11f74a6abf6acc572",'
+                 '"Installed-Size":"78630", "Key":"Pamd64 nodejs 10.24.1-1nodesource1 1f74a6abf6acc572",'
                  '"License":"unknown",'
                  '"MD5sum":"6d9f0e30396cb6c20945ff6de2f9f322","Maintainer":"Ivan Iguaran <ivan@nodesource.com>",'
                  '"Package":"nodejs",'
