@@ -48,7 +48,7 @@ class MirrorsAPISection(BaseAPIClient):
             downloaddate=cast(str, api_response["LastDownloadDate"]) if "LastDownloadDate" in api_response else None,
             filter=cast(str, api_response["Filter"]) if "Filter" in api_response else None,
             status=cast(int, api_response["Status"]) if "Status" in api_response else None,
-            worker_pid=cast( int, api_response["WorkerPID"]) if "WorkerPID" in api_response else None,
+            worker_pid=cast(int, api_response["WorkerPID"]) if "WorkerPID" in api_response else None,
             filter_with_deps=cast(bool, api_response["FilterWithDeps"]) if "FilterWithDeps" in api_response else False,
             skip_component_check=cast(bool, api_response["SkipComponentCheck"]
                                       ) if "SkipComponentCheck" in api_response else False,
