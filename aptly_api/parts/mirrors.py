@@ -50,11 +50,16 @@ class MirrorsAPISection(BaseAPIClient):
             status=cast(int, api_response["Status"]) if "Status" in api_response else None,
             worker_pid=cast( int, api_response["WorkerPID"]) if "WorkerPID" in api_response else None,
             filter_with_deps=cast(bool, api_response["FilterWithDeps"]) if "FilterWithDeps" in api_response else False,
-            skip_component_check=cast(bool, api_response["SkipComponentCheck"]) if "SkipComponentCheck" in api_response else False,
-            skip_architecture_check=cast(bool, api_response["SkipArchitectureCheck"]) if "SkipArchitectureCheck" in api_response else False,
-            download_sources=cast(bool, api_response["DownloadSources"]) if "DownloadSources" in api_response else False,
-            download_udebs=cast(bool, api_response["DownloadUdebs"]) if "DownloadUdebs" in api_response else False,
-            download_installer=cast(bool, api_response["DownloadInstaller"]) if "DownloadInstaller" in api_response else False,
+            skip_component_check=cast(bool, api_response["SkipComponentCheck"]
+                                      ) if "SkipComponentCheck" in api_response else False,
+            skip_architecture_check=cast(bool, api_response["SkipArchitectureCheck"]
+                                         ) if "SkipArchitectureCheck" in api_response else False,
+            download_sources=cast(bool, api_response["DownloadSources"]
+                                  ) if "DownloadSources" in api_response else False,
+            download_udebs=cast(bool, api_response["DownloadUdebs"]
+                                ) if "DownloadUdebs" in api_response else False,
+            download_installer=cast(bool, api_response["DownloadInstaller"]
+                                    ) if "DownloadInstaller" in api_response else False,
         )
 
     def list(self) -> Sequence[Mirror]:
