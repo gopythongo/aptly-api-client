@@ -12,6 +12,7 @@ from aptly_api.parts.publish import PublishAPISection
 from aptly_api.parts.repos import ReposAPISection
 from aptly_api.parts.files import FilesAPISection
 from aptly_api.parts.snapshots import SnapshotAPISection
+from aptly_api.parts.mirrors import MirrorsAPISection
 
 
 class Client:
@@ -31,6 +32,8 @@ class Client:
                                      ssl_cert=ssl_cert, http_auth=http_auth, timeout=timeout)
         self.snapshots = SnapshotAPISection(base_url=self.__aptly_server_url, ssl_verify=ssl_verify,
                                             ssl_cert=ssl_cert, http_auth=http_auth, timeout=timeout)
+        self.mirrors = MirrorsAPISection(base_url=self.__aptly_server_url, ssl_verify=ssl_verify,
+                                         ssl_cert=ssl_cert, http_auth=http_auth, timeout=timeout)
 
     @property
     def aptly_server_url(self) -> str:

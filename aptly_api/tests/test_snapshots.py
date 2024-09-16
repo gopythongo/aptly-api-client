@@ -34,13 +34,15 @@ class SnapshotAPISectionTests(TestCase):
                     name='stretch-security-1',
                     description='Snapshot from mirror [stretch-security]: http://security.debian.org/debian-security/ '
                                 'stretch/updates',
-                    created_at=iso8601.parse_date('2017-06-03T21:36:22.2692213Z')
+                    created_at=iso8601.parse_date(
+                        '2017-06-03T21:36:22.2692213Z')
                 ),
                 Snapshot(
                     name='stretch-updates-1',
                     description='Snapshot from mirror [stretch-updates]: http://ftp-stud.hs-esslingen.de/debian/ '
                                 'stretch-updates',
-                    created_at=iso8601.parse_date('2017-06-03T21:36:22.431767659Z')
+                    created_at=iso8601.parse_date(
+                        '2017-06-03T21:36:22.431767659Z')
                 )
             ]
         )
@@ -136,8 +138,10 @@ class SnapshotAPISectionTests(TestCase):
         self.assertIsNotNone(expected.fields)
 
         self.assertDictEqual(
-            parsed.fields if parsed.fields else {},  # make sure that mypy doesn't error on this being potentially None
-            expected.fields if expected.fields else {},  # this can't happen unless Package.__init__ is fubared
+            # make sure that mypy doesn't error on this being potentially None
+            parsed.fields if parsed.fields else {},
+            # this can't happen unless Package.__init__ is fubared
+            expected.fields if expected.fields else {},
         )
 
     def test_show(self, *, rmock: requests_mock.Mocker) -> None:
@@ -159,7 +163,8 @@ class SnapshotAPISectionTests(TestCase):
                   text='{"Name":"aptly-repo-2","CreatedAt":"2017-06-03T23:43:40.275605639Z",'
                        '"Description":"test"}')
         self.assertEqual(
-            self.sapi.update("aptly-repo-1", newname="aptly-repo-2", newdescription="test"),
+            self.sapi.update(
+                "aptly-repo-1", newname="aptly-repo-2", newdescription="test"),
             Snapshot(
                 name='aptly-repo-2',
                 description='test',
@@ -200,3 +205,19 @@ class SnapshotAPISectionTests(TestCase):
                 created_at=iso8601.parse_date('2017-06-07T14:19:07.706408213Z')
             )
         )
+
+    def test_create_from_mirror(self, *, rmock: requests_mock.Mocker) -> None:
+        expected = {'Name': 'aptly-mirror-snap', 'Description': 'Snapshot from local repo [aptly-repo]'}
+        rmock.post("http://test/api/mirrors/aptly-mirror/snapshots",
+                   text='{"Name":"aptly-mirror-snap","CreatedAt":"2022-11-29T21:43:45.275605639Z",'
+                        '"Description":"Snapshot from local mirror [aptly-mirror]"}')
+        self.assertEqual(
+            self.sapi.create_from_mirror(mirrorname="aptly-mirror", snapshotname="aptly-mirror-snap",
+                                         description='Snapshot from local repo [aptly-repo]'),
+            Snapshot(
+                name='aptly-mirror-snap',
+                description='Snapshot from local mirror [aptly-mirror]',
+                created_at=iso8601.parse_date('2022-11-29T21:43:45.275605639Z')
+            )
+        )
+        self.assertEqual(rmock.request_history[0].json(), expected)
