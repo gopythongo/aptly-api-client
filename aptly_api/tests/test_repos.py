@@ -180,22 +180,28 @@ class ReposAPISectionTests(TestCase):
     def test_include_file(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/repos/aptly-repo/include/test/dirmngr_2.1.18-6_amd64.changes",
                    text='{"FailedFiles":[],"Report":{"Warnings":[],'
-                        '"Added":["dirmngr-dbgsmy_2.1.18-6_amd64 added", "dirmngr_2.1.18-6_source added", "dirmngr_2.1.18-6_amd64 added"],"Removed":[]}}')
+                        '"Added":["dirmngr-dbgsmy_2.1.18-6_amd64 added", "dirmngr_2.1.18-6_source added",'
+                        '"dirmngr_2.1.18-6_amd64 added"],"Removed":[]}}')
         self.assertEqual(
-            self.rapi.include_uploaded_file("aptly-repo", "test", "dirmngr_2.1.18-6_amd64.changes", force_replace=True),
+            self.rapi.include_uploaded_file("aptly-repo", "test", "dirmngr_2.1.18-6_amd64.changes",
+                                            force_replace=True, ignore_signature=True,
+                                            accept_unsigned=True),
             FileReport(failed_files=[],
-                       report={'Added': ['dirmngr-dbgsmy_2.1.18-6_amd64 added', 'dirmngr_2.1.18-6_source added', 'dirmngr_2.1.18-6_amd64 added'],
+                       report={'Added': ['dirmngr-dbgsmy_2.1.18-6_amd64 added', 'dirmngr_2.1.18-6_source added',
+                                         'dirmngr_2.1.18-6_amd64 added'],
                                'Removed': [], 'Warnings': []})
         )
 
     def test_include_dir(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.post("http://test/api/repos/aptly-repo/include/test",
                    text='{"FailedFiles":[],"Report":{"Warnings":[],'
-                        '"Added":["dirmngr-dbgsmy_2.1.18-6_amd64 added", "dirmngr_2.1.18-6_source added", "dirmngr_2.1.18-6_amd64 added"],"Removed":[]}}')
+                        '"Added":["dirmngr-dbgsmy_2.1.18-6_amd64 added", "dirmngr_2.1.18-6_source added",'
+                        '"dirmngr_2.1.18-6_amd64 added"],"Removed":[]}}')
         self.assertEqual(
             self.rapi.include_uploaded_file("aptly-repo", "test", force_replace=True),
             FileReport(failed_files=[],
-                       report={'Added': ['dirmngr-dbgsmy_2.1.18-6_amd64 added', 'dirmngr_2.1.18-6_source added', 'dirmngr_2.1.18-6_amd64 added'],
+                       report={'Added': ['dirmngr-dbgsmy_2.1.18-6_amd64 added', 'dirmngr_2.1.18-6_source added',
+                                         'dirmngr_2.1.18-6_amd64 added'],
                                'Removed': [], 'Warnings': []})
         )
 

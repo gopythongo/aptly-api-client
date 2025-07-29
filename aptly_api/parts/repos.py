@@ -126,19 +126,18 @@ class ReposAPISection(BaseAPIClient):
                                 params=params)
 
         return self.filereport_from_response(resp.json())
-    
+
     def include_uploaded_file(self, reponame: str, dir: str, filename: Optional[str] = None,
-                          remove_processed_files: bool = True, force_replace: bool = False,
-                          acceptUnsigned: bool = False, ignoreSignature: bool = False) -> FileReport:
+                              remove_processed_files: bool = True, force_replace: bool = False,
+                              accept_unsigned: bool = False, ignore_signature: bool = False) -> FileReport:
         params = {
             "noRemoveFiles": "0" if remove_processed_files else "1",
-
         }
         if force_replace:
             params["forceReplace"] = "1"
-        if acceptUnsigned:
+        if accept_unsigned:
             params["acceptUnsigned"] = "1"
-        if ignoreSignature:
+        if ignore_signature:
             params["ignoreSignature"] = "1"
 
         if filename is None:
