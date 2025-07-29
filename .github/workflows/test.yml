@@ -5,7 +5,6 @@ on:
         branches: [ "master" ]
     pull_request:
         branches: [ "master" ]
-    workflow_dispatch:
 
 jobs:
     build:
@@ -35,6 +34,7 @@ jobs:
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   path-to-lcov: coverage.lcov
+                  parallel: true
             - name: Run Flake8
               run: |
                   flake8 --max-line-length=120 aptly_api setup.py
@@ -43,3 +43,12 @@ jobs:
                   mypy --install-types --non-interactive \
                        --ignore-missing-imports --follow-imports=skip --disallow-untyped-calls \
                        --disallow-untyped-defs -p aptly_api
+    finish:
+        needs: build
+        if: ${{ always() }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Close parallel build
+              uses: coverallsapp/github-action@master
+              with:
+                  parallel-finished: true
