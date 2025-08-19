@@ -1,5 +1,5 @@
 requests-mock==1.12.1
-coverage==7.10.2
+coverage==7.10.4
 coveralls==4.0.1
 flake8==7.3.0
 pep257==0.7.0
