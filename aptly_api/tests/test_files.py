@@ -45,6 +45,14 @@ class FilesAPISectionTests(TestCase):
         with self.assertRaises(AptlyAPIException):
             self.fapi.upload("test", os.path.join(os.path.dirname(__file__), "testpkg.deb"))
 
+    def test_upload_with_tuples(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.post("http://test/api/files/test", text='["test/otherpkg.deb", "test/binpkg.deb"]')
+        with open(os.path.join(os.path.dirname(__file__), "testpkg.deb"), "rb") as pkgf:
+            self.assertSequenceEqual(
+                self.fapi.upload("test", ("otherpkg.deb", pkgf), ("binpkg.deb", b"dpkg-contents")),
+                ['test/otherpkg.deb', 'test/binpkg.deb'],
+            )
+
     def test_delete(self, *, rmock: requests_mock.Mocker) -> None:
         rmock.delete("http://test/api/files/test",
                      text='{}')
