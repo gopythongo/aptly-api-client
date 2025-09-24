@@ -32,10 +32,10 @@ class ClientTests(TestCase):
     def test_api_subdir_get(self, *, rmock: requests_mock.Mocker) -> None:
         # register mock:// scheme with urllib.parse
         import urllib.parse
-        urllib.parse.uses_netloc += ['mock']
-        urllib.parse.uses_relative += ['mock']
-        urllib.parse.uses_fragment += ['mock']
-        urllib.parse.uses_params += ['mock']
+        urllib.parse.uses_netloc.append('mock')
+        urllib.parse.uses_relative.append('mock')
+        urllib.parse.uses_fragment.append('mock')
+        urllib.parse.uses_params.append('mock')
 
         cl = AptlyClient("mock://test/basedir/")
         rmock.get("mock://test/basedir/api/test", status_code=200, text='')
