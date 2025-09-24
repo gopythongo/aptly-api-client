@@ -35,6 +35,7 @@ jobs:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   path-to-lcov: coverage.lcov
                   parallel: true
+                  coverage-reporter-version: v0.6.15
             - name: Run Flake8
               run: |
                   flake8 --max-line-length=120 aptly_api setup.py
