@@ -30,3 +30,20 @@ class MiscAPISectionTests(TestCase):
         rmock.get("http://test/api/version", text='{"droenk": "blah"}')
         with self.assertRaises(AptlyAPIException):
             self.mapi.version()
+
+    def test_metrics(self, *, rmock: requests_mock.Mocker) -> None:
+        with open('./aptly_api/tests/test_data/metrics.txt') as test_file:
+            test_data = test_file.read()
+            rmock.get("http://test/api/metrics", text=test_data)
+            self.assertEqual(self.mapi.metrics(), test_data)
+
+    def test_metrics_non_200_status_code(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.register_uri("GET", "http://test/api/metrics", status_code=204, text="")
+        with self.assertRaises(AptlyAPIException):
+            self.mapi.metrics()
+
+    def test_metrics_api_disabled_or_missing(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.register_uri("GET", "http://test/api/metrics", status_code=404, text="404 page not found")
+        with self.assertRaises(NotImplementedError):
+            self.mapi.metrics()
+
