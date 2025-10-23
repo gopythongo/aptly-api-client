@@ -90,7 +90,7 @@ class BaseAPIClient:
         resp = requests.get(self._make_url(urlpath), params=params, verify=self.ssl_verify,
                             cert=self.ssl_cert, auth=self.http_auth, timeout=self.timeout)
 
-        if resp.status_code < 200 or resp.status_code >= 300:
+        if resp.status_code < 200 or resp.status_code >= 300 and resp.status_code != 503:
             raise AptlyAPIException(self._error_from_response(resp), status_code=resp.status_code)
 
         return resp
