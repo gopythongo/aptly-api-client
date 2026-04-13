@@ -30,3 +30,17 @@ class MiscAPISectionTests(TestCase):
         rmock.get("http://test/api/version", text='{"droenk": "blah"}')
         with self.assertRaises(AptlyAPIException):
             self.mapi.version()
+
+    def test_healthy(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.get("http://test/api/healthy", text='{"Status":"Aptly is healthy"}')
+        self.assertEqual(self.mapi.healthy(), "Aptly is healthy")
+
+    def test_healthy_error(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.get("http://test/api/healthy", text='{"dronek": "blah"}')
+        with self.assertRaises(AptlyAPIException):
+            self.mapi.healthy()
+
+    def test_healthy_aptly_to_old(self, *, rmock: requests_mock.Mocker) -> None:
+        rmock.register_uri("GET", "http://test/api/healthy", status_code=404, text="Not Found")
+        with pytest.raises(NotImplementedError):
+            self.mapi.healthy()
