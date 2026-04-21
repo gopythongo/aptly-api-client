@@ -5,6 +5,6 @@ flake8==7.3.0
 pep257==0.7.0
 doc8==2.0.0
 Pygments==2.20.0
-mypy==1.20.0
+mypy==1.20.2
 pytest==9.0.2
 pytest-cov==7.1.0
