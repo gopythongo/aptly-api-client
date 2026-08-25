@@ -25,6 +25,12 @@ class FilesAPISection(BaseAPIClient):
         return cast(List[str], resp.json())
 
     def upload(self, destination: str, *files: Union[str, _tuplefiletype]) -> Sequence[str]:
+        """Upload files to an Aptly upload directory.
+
+        ``files`` accepts either local file paths or requests-style multipart
+        tuples: ``(filename, file)``, ``(filename, file, content_type)`` or
+        ``(filename, file, content_type, headers)``.
+        """
         to_upload = []  # type: List[Tuple[str, Union[BinaryIO, _tuplefiletype]]]
         for f in files:
             if isinstance(f, tuple):
