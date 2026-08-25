@@ -57,6 +57,7 @@ Contributors
 * Samuel Bachmann <samuelba@users.noreply.github.com>
 * @agustinhenze <agustinhenze@users.noreply.github.com>
 * @Verteo <Verteo@users.noreply.github.com>
+* @jdelic <jdelic@users.noreply.github.com>
 
 
 License
